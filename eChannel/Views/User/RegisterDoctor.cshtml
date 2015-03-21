@@ -1,0 +1,48 @@
+﻿@{
+    ViewBag.Title = "RegisterDoctor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h1>RegisterDoctor</h1>
+
+<div class="row">
+    <div class="col-lg-6">
+        <form class="form-horizontal" name="registerForm" action="@Url.Action("RegisterDoctor", "User")" method="POST">
+
+
+            <input type="text" class="form-control" name="username" placeholder="Username">
+
+
+            <input type="password" class="form-control" name="password" placeholder="Password">
+
+
+            <input type="password" class="form-control" name="repassword" placeholder="Re-enter Password">
+
+            <input type="text" class="form-control" name="email" placeholder="Email">
+
+          
+         
+
+            @*<div class="radio">
+                <label>
+                    <input type="radio" name="gender" id="optionsRadios1" value="male" checked>
+                    Male
+                </label>
+                <label></label>
+                <label>
+                    <input type="radio" name="gender" id="optionsRadios2" value="female">
+                    Female
+                </label>
+            </div>*@
+
+
+            <button type="submit" class="btn btn-primary">Register</button>
+
+
+        </form>
+
+    </div>
+</div>
+
+@Html.DisplayFor(m => ViewData);
