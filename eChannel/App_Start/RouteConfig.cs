@@ -36,6 +36,30 @@ namespace eChannel
                 url: "register-patient",
                 defaults: new { controller = "User", action = "RegisterPatient" }
             );
+
+            routes.MapRoute(
+                name: "LoginAsDoctor",
+                url: "login-doctor",
+                defaults: new { controller = "User", action = "LoginDoctor" }
+            );
+
+            routes.MapRoute(
+                name: "LoginAsPatient",
+                url: "login-patient",
+                defaults: new { controller = "User", action = "LoginPatient" }
+            );
+
+            routes.MapRoute(
+               name: "DashboardDoctor",
+               url: "dashboard-doctor",
+               defaults: new { controller = "Doctor", action = "Dashboard" }
+           );
+
+            routes.MapRoute(
+                name: "DashboardPatient",
+                url: "dashboard-patient",
+                defaults: new { controller = "Patient", action = "Dashboard" }
+            );
         }
     }
 }

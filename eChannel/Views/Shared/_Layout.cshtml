@@ -31,10 +31,22 @@
               
                
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="@Url.Action("RegisterDoctor", "User")">Register as Doctor</a></li>
-                    <li><a href="@Url.Action("RegisterPatient", "User")">Register as Patient</a></li>
-                    <li><a href="#">Login as Doctor</a></li>
-                    <li><a href="#">Login as Patient</a></li>
+                    
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Register <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="@Url.Action("RegisterPatient", "User")">Patient</a></li>
+                            <li><a href="@Url.Action("RegisterDoctor", "User")">Doctor</a></li> 
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Login <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="@Url.Action("LoginPatient", "User")">Patient</a></li>
+                            <li><a href="@Url.Action("LoginDoctor", "User")">Doctor</a></li>
+                        </ul>
+                    </li>
+                    
                 </ul>
             </div>
             

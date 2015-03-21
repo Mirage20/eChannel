@@ -1,8 +1,57 @@
 ﻿
 @{
-    ViewBag.Title = "RegisterPatient";
+    ViewBag.Title = "Register as Patientt";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>RegisterPatient</h1>
 
+
+<div class="row">
+    <div class="col-lg-6 col-lg-offset-3">
+        <div class="well bs-component">
+            <form class="form-horizontal" name="registerForm" action="@Url.Action("RegisterPatient", "User")" method="POST">
+                <fieldset>
+                    <legend>Register as Patient</legend>
+
+                    <div class="form-group">
+                        <label for="inputUsername" class="col-lg-2 control-label">Username</label>
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" name="username" placeholder="Username">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputPassword" class="col-lg-2 control-label">Password</label>
+                        <div class="col-lg-10">
+                            <input type="password" class="form-control" name="password" placeholder="Password">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputRePassword" class="col-lg-2 control-label">Re-Enter Password</label>
+                        <div class="col-lg-10">
+                            <input type="password" class="form-control" name="repassword" placeholder="Re-enter Password">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="inputEmail" class="col-lg-2 control-label">Email</label>
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" name="email" placeholder="Email">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-2 col-lg-offset-2">
+                            <button type="submit" class="btn btn-primary">Register</button>
+                        </div>
+                    </div>
+
+
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+@Html.DisplayFor(m => ViewData);

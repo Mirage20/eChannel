@@ -91,12 +91,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\DoctorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PatientController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\DBContext.cs" />
+    <Compile Include="Models\PatientLogin.cs" />
     <Compile Include="Models\DoctorLogin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -108,6 +111,10 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\User\RegisterDoctor.cshtml" />
     <Content Include="Views\User\RegisterPatient.cshtml" />
+    <Content Include="Views\User\LoginPatient.cshtml" />
+    <Content Include="Views\User\LoginDoctor.cshtml" />
+    <Content Include="Views\Patient\Dashboard.cshtml" />
+    <Content Include="Views\Doctor\Dashboard.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

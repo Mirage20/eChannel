@@ -23,7 +23,7 @@ namespace eChannel.Models
             DbConnection = new MySqlConnection(connectionString);
         }
 
-
+        #region DoctorLogin
 
         public void CreateDoctorLogin(DoctorLogin model)
         {
@@ -59,8 +59,45 @@ namespace eChannel.Models
             DbConnection.Close();
             return existing;
         }
+        #endregion
 
-       
+        #region PatientLogin
+
+        public void CreatePatientLogin(PatientLogin model)
+        {
+
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "INSERT INTO patient_login(username,password,email) VALUES(@username, @password,@email)";
+            command.Parameters.AddWithValue("@username", model.Username);
+            command.Parameters.AddWithValue("@password", model.Password);
+            command.Parameters.AddWithValue("@email", model.Email);
+            command.ExecuteNonQuery();
+            DbConnection.Close();
+        }
+
+        public PatientLogin FindOneInPatientLogin(string columnName, string value)
+        {
+
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "SELECT * FROM patient_login WHERE " + columnName + "=@value";
+            command.Parameters.AddWithValue("@value", value);
+            MySqlDataReader reader = command.ExecuteReader();
+            PatientLogin existing = null;
+            if (reader.Read())
+            {
+                existing = new PatientLogin();
+                existing.PatientID = reader.GetInt32("patient_id");
+                existing.Username = reader.GetString("username");
+                existing.Password = reader.GetString("password");
+                existing.Email = reader.GetString("email");
+            }
+
+            DbConnection.Close();
+            return existing;
+        }
+        #endregion
 
     }
 }
