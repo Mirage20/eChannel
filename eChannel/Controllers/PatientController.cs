@@ -21,5 +21,18 @@ namespace eChannel.Controllers
             }
             return View();
         }
+
+        public ActionResult Settings()
+        {
+            if (Session["isDoctor"] != null && (bool)Session["isDoctor"])
+            {
+                return RedirectToAction("Dashboard", "Doctor");
+            }
+            else if (Session["isDoctor"] == null)
+            {
+                return RedirectToAction("LoginPatient", "User");
+            }
+            return View();
+        }
     }
 }

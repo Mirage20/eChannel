@@ -22,7 +22,7 @@ namespace eChannel
             routes.MapRoute(
                 name: "Home",
                 url: "",
-                defaults: new { controller = "Home", action = "Index"}
+                defaults: new { controller = "Home", action = "Index" }
             );
 
             routes.MapRoute(
@@ -65,6 +65,18 @@ namespace eChannel
                 name: "DashboardPatient",
                 url: "dashboard-patient",
                 defaults: new { controller = "Patient", action = "Dashboard" }
+            );
+
+            routes.MapRoute(
+               name: "SettingsDoctor",
+               url: "settings-doctor",
+               defaults: new { controller = "Doctor", action = "Settings" }
+           );
+
+            routes.MapRoute(
+                name: "SettingsPatient",
+                url: "settings-patient",
+                defaults: new { controller = "Patient", action = "Settings" }
             );
         }
     }

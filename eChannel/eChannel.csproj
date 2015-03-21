@@ -115,6 +115,8 @@
     <Content Include="Views\User\LoginDoctor.cshtml" />
     <Content Include="Views\Patient\Dashboard.cshtml" />
     <Content Include="Views\Doctor\Dashboard.cshtml" />
+    <Content Include="Views\Doctor\Settings.cshtml" />
+    <Content Include="Views\Patient\Settings.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
