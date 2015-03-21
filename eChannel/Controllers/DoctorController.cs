@@ -8,11 +8,18 @@ namespace eChannel.Controllers
 {
     public class DoctorController : Controller
     {
-        //
-        // GET: /Doctor/
+
         public ActionResult Dashboard()
         {
+            if (Session["isDoctor"] != null && !((bool)Session["isDoctor"]))
+            {
+                return RedirectToAction("Dashboard", "Patient");
+            }
+            else if (Session["isDoctor"] == null)
+            {
+                return RedirectToAction("LoginDoctor", "User");
+            }
             return View();
         }
-	}
+    }
 }

@@ -50,6 +50,12 @@ namespace eChannel
             );
 
             routes.MapRoute(
+                name: "Logout",
+                url: "logout",
+                defaults: new { controller = "User", action = "Logout" }
+            );
+
+            routes.MapRoute(
                name: "DashboardDoctor",
                url: "dashboard-doctor",
                defaults: new { controller = "Doctor", action = "Dashboard" }

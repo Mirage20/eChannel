@@ -11,6 +11,19 @@ namespace eChannel.Controllers
       
         public ActionResult RegisterDoctor()
         {
+            if (Session["isDoctor"] != null)
+            {
+                if ((bool)Session["isDoctor"])
+                {
+                    return RedirectToAction("Dashboard", "Doctor");
+                }
+                else
+                {
+                    return RedirectToAction("Dashboard", "Patient");
+                }
+
+            }
+
             ViewData["success"] = 0;
             ViewData["hasError"] = 0;
             ViewData["errorMsg"] = "";
@@ -38,6 +51,20 @@ namespace eChannel.Controllers
 
         public ActionResult RegisterPatient()
         {
+
+            if (Session["isDoctor"] != null)
+            {
+                if ((bool)Session["isDoctor"])
+                {
+                    return RedirectToAction("Dashboard", "Doctor");
+                }
+                else
+                {
+                    return RedirectToAction("Dashboard", "Patient");
+                }
+
+            }
+
             ViewData["success"] = 0;
             ViewData["hasError"] = 0;
             ViewData["errorMsg"] = "";
@@ -65,6 +92,19 @@ namespace eChannel.Controllers
 
         public ActionResult LoginPatient()
         {
+            if (Session["isDoctor"] != null)
+            {
+                if ((bool)Session["isDoctor"])
+                {
+                    return RedirectToAction("Dashboard", "Doctor");
+                }
+                else
+                {
+                    return RedirectToAction("Dashboard", "Patient");
+                }
+
+            }
+
             ViewData["success"] = 0;
             ViewData["hasError"] = 0;
             ViewData["errorMsg"] = "";
@@ -79,7 +119,7 @@ namespace eChannel.Controllers
                     Session["userID"] = existing.PatientID;
                     Session["username"]=existing.Username;
                     Session["isDoctor"] = false;
-                    return View();
+                    return RedirectToAction("Dashboard","Patient");
                 }
                 else
                 {
@@ -95,9 +135,64 @@ namespace eChannel.Controllers
 
         public ActionResult LoginDoctor()
         {
-            
+
+            if (Session["isDoctor"]!=null)
+            {
+                if((bool)Session["isDoctor"])
+                {
+                    return RedirectToAction("Dashboard", "Doctor");
+                }
+                else
+                {
+                    return RedirectToAction("Dashboard", "Patient");
+                }
+
+            }
+
+            ViewData["success"] = 0;
+            ViewData["hasError"] = 0;
+            ViewData["errorMsg"] = "";
+
+            if (Request.HttpMethod.Equals("POST"))
+            {
+                DoctorLogin existing = DBContext.GetInstance().FindOneInDoctorLogin("username", Request.Form["username"]);
+                if (existing != null && existing.Password.Equals(Request.Form["password"]))
+                {
+                    
+                    ViewData["success"] = 1;
+                    Session["userID"] = existing.DoctorID;
+                    Session["username"] = existing.Username;
+                    Session["isDoctor"] = true;
+                    return RedirectToAction("Dashboard", "Doctor");
+                }
+                else
+                {
+                    ViewData["hasError"] = 1;
+                    ViewData["errorMsg"] = "Username or Password not match";
+                }
+
+            }
+
             return View();
         }
 
+        public ActionResult Logout()
+        {
+            if (Session["isDoctor"] != null)
+            {
+                bool isDoctor=(bool)Session["isDoctor"];
+                Session.Clear();
+                Session.Abandon();
+                if (isDoctor)
+                {
+                    return RedirectToAction("LoginDoctor", "User");
+                }
+                else
+                {
+                    return RedirectToAction("LoginPatient", "User");
+                }
+            }
+            return RedirectToAction("Index", "Home");
+        }
 	}
 }
