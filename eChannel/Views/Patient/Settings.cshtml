@@ -6,3 +6,96 @@
 
 <h2>P Settings</h2>
 
+@{
+    eChannel.Models.Patient patient = (eChannel.Models.Patient)ViewData["patient"];
+    <div class="row">
+        <div class="col-lg-6 col-lg-offset-3">
+            <div class="well bs-component">
+                <form class="form-horizontal" name="registerForm" action="@Url.Action("Settings", "Patient")" method="POST" enctype="multipart/form-data">
+                    <fieldset>
+                        <legend>Update your Profile</legend>
+
+                        <div class="form-group">
+                            <label for="inputFirstName" class="col-lg-2 control-label">FirstName</label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" name="firstName" placeholder="FirstName" value="@patient.FirstName">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputLastName" class="col-lg-2 control-label">LastName</label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" name="lastName" placeholder="LastName" value="@patient.LastName">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputPhone" class="col-lg-2 control-label">Phone</label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" name="phone" placeholder="Phone Number" value="@patient.PhoneNumber">
+                            </div>
+                        </div>
+
+                        <div class="form-group align-left">
+                            <label for="Picute" class="col-lg-2 control-label">Picture</label>
+                            <div class="col-lg-4">
+                                <input id="imgInput" type="file" accept="image/*" name="picture">
+                            </div>
+                        </div>
+
+                        <div class="form-group align-left">
+                            <label for="Picute" class="col-lg-2 control-label"></label>
+
+                            <div class="col-lg-5">
+                                <label>New Picture</label>
+                                <img id="pictureSample" width="100" height="100" src="" />
+
+                            </div>
+                            <div class="col-lg-5">
+                                <label>Current Picture</label>
+                                <img id="pictureSample" width="100" height="100" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(patient.Picture))" />
+
+                            </div>
+
+                        </div>
+                        <div class="form-group align-left">
+                            <label class="col-lg-2 control-label">Gender</label>
+                            <div class="col-lg-10">
+
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="gender" value="male"
+                                               @if (patient.Gender.Equals("male") || patient.Gender.Equals("")) { Write("checked=\"\""); }>Male
+                                    </label>
+                                    <label></label>
+                                    <label>
+                                        <input type="radio" name="gender" value="female"
+                                               @if (patient.Gender.Equals("female")) { Write("checked=\"\""); }>Female
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="inputBirthdate" class="col-lg-2 control-label">Birthdate</label>
+                            <div class="col-lg-10">
+                                <input type="date" class="form-control" name="birthdate" placeholder="Birthdate" value="@patient.Birthdate.ToString("yyyy-MM-dd")" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-2 col-lg-offset-2">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </div>
+
+
+                    </fieldset>
+                </form>
+
+            </div>
+        </div>
+    </div>
+}
+
+@*@Html.DisplayFor(m => );*@
+

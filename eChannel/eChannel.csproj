@@ -83,6 +83,7 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\custom.css" />
+    <Content Include="Content\empty_profile.gif" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\custom.js" />
@@ -99,6 +100,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\DBContext.cs" />
+    <Compile Include="Models\Doctor.cs" />
+    <Compile Include="Models\Patient.cs" />
     <Compile Include="Models\PatientLogin.cs" />
     <Compile Include="Models\DoctorLogin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

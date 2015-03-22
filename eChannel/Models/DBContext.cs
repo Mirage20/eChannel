@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Configuration;
 using MySql.Data.MySqlClient;
+using System.IO;
 namespace eChannel.Models
 {
     public class DBContext
@@ -14,7 +15,17 @@ namespace eChannel.Models
         {
             if (instance == null)
                 instance = new DBContext();
+
+            if (instance.DbConnection.State == System.Data.ConnectionState.Open)
+                instance.DbConnection.Close();
             return instance;
+        }
+
+        private void CheckIfConeectionOpen()
+        {
+            if (instance.DbConnection.State == System.Data.ConnectionState.Open)
+                instance.DbConnection.Close();
+
         }
 
         private DBContext()
@@ -99,5 +110,116 @@ namespace eChannel.Models
         }
         #endregion
 
+
+        #region Doctor
+
+        public void UpdateDoctor(Doctor model)
+        {
+
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "UPDATE doctor SET first_name=@firstName, last_name=@lastName, phone=@phone, gender=@gender, picture=@picture WHERE `doctor_id`=@doctorID";
+            command.Parameters.AddWithValue("@firstName", model.FirstName);
+            command.Parameters.AddWithValue("@lastName", model.LastName);
+            command.Parameters.AddWithValue("@phone", model.PhoneNumber);
+            command.Parameters.AddWithValue("@gender", model.Gender);
+            command.Parameters.AddWithValue("@picture", model.Picture);
+            command.Parameters.AddWithValue("@doctorID", model.DoctorLogin.DoctorID);
+            command.ExecuteNonQuery();
+            DbConnection.Close();
+        }
+
+        public Doctor FindOneInDoctor(string columnName, string value)
+        {
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "SELECT *,length(picture) as p_size FROM doctor WHERE " + columnName + "=@value";
+            command.Parameters.AddWithValue("@value", value);
+            MySqlDataReader reader = command.ExecuteReader();
+            Doctor existing = null;
+
+            if (reader.Read())
+            {
+                int doctorID = reader.GetInt32("doctor_id");
+                string firstName = reader.GetString("first_name");
+                string lastName = reader.GetString("last_name");
+                string phoneNumber = reader.GetString("phone");
+                string gender = reader.GetString("gender");
+                byte[] picture = new byte[reader.GetUInt32("p_size")];
+                if (picture.Length > 8)
+                    reader.GetBytes(reader.GetOrdinal("picture"), 0, picture, 0, picture.Length);
+                else
+                    picture = File.ReadAllBytes(HttpContext.Current.Server.MapPath("~/Content/empty_profile.gif"));
+                DbConnection.Close();
+                existing = new Doctor(FindOneInDoctorLogin("doctor_id", doctorID.ToString()));
+                existing.FirstName = firstName;
+                existing.LastName = lastName;
+                existing.PhoneNumber = phoneNumber;
+                existing.Gender = gender;
+                existing.Picture = picture;
+            }
+            else
+                DbConnection.Close();
+
+            return existing;
+        }
+        #endregion
+
+        #region Patient
+
+        public void UpdatePatient(Patient model)
+        {
+
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "UPDATE patient SET first_name=@firstName, last_name=@lastName, phone=@phone, birthdate=@birthdate, gender=@gender, picture=@picture WHERE `patient_id`=@patientID";
+            command.Parameters.AddWithValue("@firstName", model.FirstName);
+            command.Parameters.AddWithValue("@lastName", model.LastName);
+            command.Parameters.AddWithValue("@phone", model.PhoneNumber);
+            command.Parameters.AddWithValue("@birthdate",model.Birthdate);
+            command.Parameters.AddWithValue("@gender", model.Gender);
+            command.Parameters.AddWithValue("@picture", model.Picture);
+            command.Parameters.AddWithValue("@patientID", model.PatientLogin.PatientID);
+            command.ExecuteNonQuery();
+            DbConnection.Close();
+        }
+
+        public Patient FindOneInPatient(string columnName, string value)
+        {
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "SELECT *,length(picture) as p_size FROM patient WHERE " + columnName + "=@value";
+            command.Parameters.AddWithValue("@value", value);
+            MySqlDataReader reader = command.ExecuteReader();
+            Patient existing = null;
+
+            if (reader.Read())
+            {
+                int patiemtID = reader.GetInt32("patient_id");
+                string firstName = reader.GetString("first_name");
+                string lastName = reader.GetString("last_name");
+                string phoneNumber = reader.GetString("phone");
+                DateTime birthdate = reader.GetDateTime("birthdate");
+                string gender = reader.GetString("gender");
+                byte[] picture = new byte[reader.GetUInt32("p_size")];
+                if (picture.Length > 8)
+                    reader.GetBytes(reader.GetOrdinal("picture"), 0, picture, 0, picture.Length);
+                else
+                    picture = File.ReadAllBytes(HttpContext.Current.Server.MapPath("~/Content/empty_profile.gif"));
+                DbConnection.Close();
+                existing = new Patient(FindOneInPatientLogin("patient_id", patiemtID.ToString()));
+                existing.FirstName = firstName;
+                existing.LastName = lastName;
+                existing.PhoneNumber = phoneNumber;
+                existing.Birthdate = birthdate;
+                existing.Gender = gender;
+                existing.Picture = picture;
+            }
+            else
+                DbConnection.Close();
+
+            return existing;
+        }
+        #endregion
     }
 }
