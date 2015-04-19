@@ -88,5 +88,12 @@ namespace eChannel.Controllers
             ViewData["doctor_schedules"] = schedules;
             return PartialView();
         }
+
+        public PartialViewResult ViewHospitals()
+        {
+            List<Hospital> hospitals = DBContext.GetInstance().FindAllInHospital();
+            ViewData["hospitals"] = hospitals;
+            return PartialView();
+        }
     }
 }

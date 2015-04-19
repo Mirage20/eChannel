@@ -2,10 +2,11 @@
 {
     List<eChannel.Models.DoctorSchedule> schedules = (List<eChannel.Models.DoctorSchedule>)ViewData["doctor_schedules"];
 
-    <div class="col-lg-8">
+    <div class="col-lg-9">
         <table class="table table-striped table-hover ">
             <tbody>
                 <tr>
+                    <td><b>Work ID</b></td>
                     <td><b>Hospital Name</b></td>
                     <td><b>Room Name</b></td>
                     <td><b>Start Time</b></td>
@@ -16,14 +17,16 @@
                 @foreach (eChannel.Models.DoctorSchedule schedule in schedules)
                 {
 
-    <tr @if (schedule.EndDateTime.CompareTo(DateTime.Now) > 0) { Write("class=success"); }>
-    <td>@schedule.HospitalName</td>
-    <td>@schedule.RoomName</td>
-    <td>@schedule.StartDateTime.ToString("yyyy-MM-dd hh:mm:ss tt")</td>
-    <td>@schedule.EndDateTime.ToString("yyyy-MM-dd hh:mm:ss tt")</td>
-    <td>@schedule.MaxChannels</td>
-    <td>@schedule.PatientApplied</td>
-    </tr>
+                    <tr @if (schedule.EndDateTime.CompareTo(DateTime.Now) > 0) { Write("class=success"); }>
+
+                        <td>@schedule.WorkID</td>
+                        <td>@schedule.HospitalName</td>
+                        <td>@schedule.RoomName</td>
+                        <td>@schedule.StartDateTime.ToString("yyyy-MM-dd hh:mm:ss tt")</td>
+                        <td>@schedule.EndDateTime.ToString("yyyy-MM-dd hh:mm:ss tt")</td>
+                        <td>@schedule.MaxChannels</td>
+                        <td>@schedule.PatientApplied</td>
+                    </tr>
                 }
             </tbody>
         </table>

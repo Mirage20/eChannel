@@ -6,7 +6,7 @@
 <h2>Doctor Dashboard</h2>
 
 <div class="row">
-    <div class="col-lg-3">
+    <div class="col-lg-2">
         <ul id="sideNav" class="nav nav-pills nav-stacked" style="border-right: 1px solid #2780E3">
             <li class="active">
                 @Ajax.ActionLink("My Schedules", "MySchedules", "Doctor", new AjaxOptions() { HttpMethod = "GET", InsertionMode = InsertionMode.Replace, UpdateTargetId = "dashboard-container" })
@@ -15,7 +15,7 @@
                 @Ajax.ActionLink("Add Schedule", "AddSchedule", "Doctor", new AjaxOptions() { HttpMethod = "GET", InsertionMode = InsertionMode.Replace, UpdateTargetId = "dashboard-container" })
             </li>
             <li><a href="#">Channels</a></li>
-            <li><a href="#">Hospitals</a></li>
+            <li>@Ajax.ActionLink("Hospitals", "ViewHospitals", "Doctor", new AjaxOptions() { HttpMethod = "GET", InsertionMode = InsertionMode.Replace, UpdateTargetId = "dashboard-container" })</li>
         </ul>
     </div>
 

@@ -90,7 +90,7 @@ namespace eChannel
             routes.MapRoute(
                 name: "GetRooms",
                 url: "get-hospital-rooms/{hospitalID}",
-                defaults: new { controller = "Hospital", action = "GetRooms"}
+                defaults: new { controller = "Hospital", action = "GetRooms" }
             );
 
             //Doctor
@@ -106,7 +106,13 @@ namespace eChannel
                 url: "dashboard-doctor-my-schedules",
                 defaults: new { controller = "Doctor", action = "MySchedules" }
             );
-            
+
+            routes.MapRoute(
+                name: "DoctorViewHospitals",
+                url: "dashboard-doctor-view-hospitals",
+                defaults: new { controller = "Doctor", action = "ViewHospitals" }
+            );
+
         }
     }
 }

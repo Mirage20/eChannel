@@ -1,0 +1,82 @@
+﻿@if (ViewData["hospitals"] != null)
+{
+    List<eChannel.Models.Hospital> hospitals = (List<eChannel.Models.Hospital>)ViewData["hospitals"];
+
+    <div class="col-lg-5">
+        <table id="hospitalTable" class="table table-striped table-hover" style="cursor:pointer">
+            <tbody>
+                <tr>
+                    <td><b>Hospital ID</b></td>
+                    <td><b>Hospital Name</b></td>
+                    <td><b>Location</b></td>
+                    <td><b>Phone Number</b></td>
+
+                </tr>
+                @foreach (eChannel.Models.Hospital hospital in hospitals)
+                {
+                    <tr>
+                        <td>@hospital.HospitalID</td>
+                        <td>@hospital.Name</td>
+                        <td>@hospital.Location</td>
+                        <td>@hospital.Phone</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        
+        
+        
+    </div>
+    
+    <div class="col-lg-4">
+        <table id="roomTable" class="table table-striped">
+            <tbody>
+                
+            </tbody>
+        </table>
+        
+        
+        
+    </div>
+    
+    <script type="text/javascript">
+        
+
+        $("#hospitalTable tbody tr").click(function () {
+            $.getJSON("@Url.Action("GetRooms", "Hospital", new { hospitalID = "_hospitalID" })".replace("_hospitalID", $(this).find("td").html()), function (data) {
+                
+                var items = [];
+                items.push("<tr>");
+                items.push("<td><b> Room ID</b></td>"
+                    + "<td><b> Room Name </b></td>"
+                    + "<td><b> Room Capacity </b></td>");
+                items.push("</tr>");
+                $.each(data, function (key, val) {
+                    items.push("<tr>");
+                    items.push("<td>" + val.RoomID + "</td>"
+                        + "<td>" + val.RoomName + "</td>"
+                        + "<td>" + val.Capacity + "</td>");
+                    items.push("</tr>");
+                });
+                $("#roomTable tbody").html(items.join(""));
+
+            });
+        });
+
+        var $tableRow = $('#hospitalTable tbody tr').click(function (e) {                    
+            if ($tableRow.index(this) > 0)
+            {
+                e.preventDefault();
+                $tableRow.removeClass("success");
+                $(this).addClass("success");
+            }
+        });
+
+       
+
+
+    </script>
+    
+}
+
+
