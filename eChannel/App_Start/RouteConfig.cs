@@ -78,6 +78,35 @@ namespace eChannel
                 url: "settings-patient",
                 defaults: new { controller = "Patient", action = "Settings" }
             );
+
+            //Hospital
+
+            routes.MapRoute(
+                name: "GetAllHospitals",
+                url: "get-all-hospitals",
+                defaults: new { controller = "Hospital", action = "GetAllHospitals" }
+            );
+
+            routes.MapRoute(
+                name: "GetRooms",
+                url: "get-hospital-rooms/{hospitalID}",
+                defaults: new { controller = "Hospital", action = "GetRooms"}
+            );
+
+            //Doctor
+
+            routes.MapRoute(
+                name: "DoctorAddSchedule",
+                url: "dashboard-doctor-add-schedule",
+                defaults: new { controller = "Doctor", action = "AddSchedule" }
+            );
+
+            routes.MapRoute(
+                name: "DoctorMySchedules",
+                url: "dashboard-doctor-my-schedules",
+                defaults: new { controller = "Doctor", action = "MySchedules" }
+            );
+            
         }
     }
 }

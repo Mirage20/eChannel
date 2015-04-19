@@ -19,6 +19,7 @@ namespace eChannel.Controllers
             {
                 return RedirectToAction("LoginDoctor", "User");
             }
+            
             return View();
         }
         public ActionResult Settings()
@@ -57,6 +58,35 @@ namespace eChannel.Controllers
             Doctor existing = DBContext.GetInstance().FindOneInDoctor("doctor_id", Session["userID"].ToString());
             ViewData["doctor"] = existing;
             return View();
+        }
+
+
+        public PartialViewResult AddSchedule()
+        {
+            
+            if(Request.HttpMethod.Equals("POST"))
+            {
+                RoomWork newRoomWork = new RoomWork()
+                {
+                    DoctorID =(int)Session["userID"],
+                    RoomID = Convert.ToInt32(Request.Form["room_number"]),
+                    StartDateTime =Convert.ToDateTime(Request.Form["start_time"]),
+                    EndDateTime = Convert.ToDateTime(Request.Form["finish_time"]),
+                    MaxChannels = Convert.ToInt32(Request.Form["max_channels"])
+                };
+                DBContext.GetInstance().CreateRoomWork(newRoomWork);
+                ViewData["success"] = 1;
+                
+            }
+            
+            return PartialView() ;
+        }
+
+        public PartialViewResult MySchedules()
+        {
+            List<DoctorSchedule> schedules = DBContext.GetInstance().FindAllDoctorSchedule((int)Session["userID"]);
+            ViewData["doctor_schedules"] = schedules;
+            return PartialView();
         }
     }
 }

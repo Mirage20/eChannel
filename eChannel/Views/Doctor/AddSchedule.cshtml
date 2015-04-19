@@ -1,0 +1,111 @@
+﻿@if (ViewData["success"] != null && ((int)ViewData["success"]) == 1)
+{    
+        <div class="col-lg-2"></div>
+        <div class="col-lg-2 alert alert-dismissible alert-success" style="margin-top:150px">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            Add successful.
+        </div>
+}
+else
+{
+
+    <div class="col-lg-8">
+        <div class="well bs-component">
+            @using (Ajax.BeginForm("AddSchedule", "Doctor", new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "dashboard-container" }, new { @class = "form-horizontal" }))
+            {
+                <fieldset>
+                    <legend>Add Schedule</legend>
+
+                    <div class="form-group">
+                        <label for="inputHospital" class="col-lg-2 control-label">Hospital Name</label>
+                        <div class="col-lg-10">
+                            <select id="hospitalID" class="form-control" name="hospital_id" required>
+                                <option value="">Select a hospital name</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputRoomNumber" class="col-lg-2 control-label">Room Number</label>
+                        <div class="col-lg-10">
+
+                            <select id="roomID" class="form-control" name="room_number" required>
+                                <option value="">Select a room number</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputStartTime" class="col-lg-2 control-label">Start Time</label>
+                        <div class="col-lg-10">
+                            <input type="datetime-local" class="form-control" name="start_time" placeholder="Start Time" value="" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputFinishTime" class="col-lg-2 control-label">Finish Time</label>
+                        <div class="col-lg-10">
+                            <input type="datetime-local" class="form-control" name="finish_time" placeholder="Finish Time" value="" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputMaxChannels" class="col-lg-2 control-label">Max Channels</label>
+                        <div class="col-lg-10">
+                            <input id="maxChannels" type="number" class="form-control" name="max_channels" placeholder="Max Channels" value="" required>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-lg-1 col-lg-offset-2">
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+
+
+                </fieldset>
+            }
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var maxChannels = 0;
+        $.getJSON("@Url.Action("GetAllHospitals", "Hospital")", function (data) {
+            var items = [];
+            items.push("<option value=''>Select a hospital name</option>");
+            $.each(data, function (key, val) {
+                items.push("<option value='" + val.HospitalID + "'>" + val.Name + "</option>");
+            });
+            $("#hospitalID").html(items.join(""));
+
+        });
+
+        $("#hospitalID").change(function () {
+            $.getJSON("@Url.Action("GetRooms", "Hospital", new { hospitalID = "_hospitalID" })".replace("_hospitalID", $("#hospitalID").val()), function (data) {
+                var items = [];
+                items.push("<option value=''>Select a room number</option>");
+                $.each(data, function (key, val) {
+                    items.push("<option value='" + val.RoomID + "'>" + val.RoomName + "</option>");
+                });
+                $("#roomID").html(items.join(""));
+
+            });
+        });
+
+        $("#roomID").change(function () {
+            $.getJSON("@Url.Action("GetRooms", "Hospital", new { hospitalID = "_hospitalID" })".replace("_hospitalID", $("#hospitalID").val()), function (data) {
+                $.each(data, function (key, val) {
+                    if ($("#roomID").val() == val.RoomID) {
+                        $("#maxChannels").val(val.Capacity);
+                        maxChannels = val.Capacity;
+                    }
+                });
+            });
+        });
+
+
+    </script>
+}
+
+@*@Html.DisplayFor(m => ViewData["aa"])*@

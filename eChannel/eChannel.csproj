@@ -87,13 +87,24 @@
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\custom.js" />
+    <None Include="Scripts\jquery-2.1.3.intellisense.js" />
+    <Content Include="Scripts\jquery-2.1.3.js" />
+    <Content Include="Scripts\jquery-2.1.3.min.js" />
     <Content Include="Scripts\jquery.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\DoctorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\HospitalController.cs" />
     <Compile Include="Controllers\PatientController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
@@ -101,9 +112,13 @@
     </Compile>
     <Compile Include="Models\DBContext.cs" />
     <Compile Include="Models\Doctor.cs" />
+    <Compile Include="Models\DoctorSchedule.cs" />
+    <Compile Include="Models\Room.cs" />
+    <Compile Include="Models\Hospital.cs" />
     <Compile Include="Models\Patient.cs" />
     <Compile Include="Models\PatientLogin.cs" />
     <Compile Include="Models\DoctorLogin.cs" />
+    <Compile Include="Models\RoomWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -120,6 +135,9 @@
     <Content Include="Views\Doctor\Dashboard.cshtml" />
     <Content Include="Views\Doctor\Settings.cshtml" />
     <Content Include="Views\Patient\Settings.cshtml" />
+    <Content Include="Scripts\jquery-2.1.3.min.map" />
+    <Content Include="Views\Doctor\AddSchedule.cshtml" />
+    <Content Include="Views\Doctor\MySchedules.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -129,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Hospital\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
