@@ -1,0 +1,120 @@
+﻿@if (ViewData["success"] != null && ((int)ViewData["success"]) == 1)
+{
+    <div class="col-lg-2"></div>
+    <div class="col-lg-2 alert alert-dismissible alert-success" style="margin-top:150px">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        Add successful.
+    </div>
+}
+else
+{
+
+    <div class="col-lg-9">
+        <div class="well bs-component">
+            @using (Ajax.BeginForm("AddChannel", "Patient", new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "dashboard-container" }, new { @class = "form-horizontal" }))
+            {
+                <fieldset>
+                    <legend>Add Channel</legend>
+
+                    <div class="form-group">
+                        <label for="inputSpec" class="col-lg-2 control-label">Doctor Specialization</label>
+                        <div class="col-lg-10">
+                            <select id="specID" class="form-control" name="spec_id" required>
+                                <option value="">Select a specialization</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputDoctor" class="col-lg-2 control-label">Doctor</label>
+                        <div class="col-lg-10">
+
+                            <select id="workID" class="form-control" name="work_id" required>
+                                <option value="">Select a doctor</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputService" class="col-lg-2 control-label">Service</label>
+                        <div class="col-lg-10">
+
+                            <select id="serviceID" class="form-control" name="service_id" required>
+                                <option value="">Select a service</option>
+                            </select>
+                        </div>
+                    </div>
+
+                   
+
+                    <div class="form-group">
+                        <label for="inputReson" class="col-lg-2 control-label">Reson</label>
+                        <div class="col-lg-10">                           
+                            <textarea class="form-control" rows="3" id="reason" name="reason" required></textarea>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-lg-1 col-lg-offset-2">
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+
+
+                </fieldset>
+            }
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var maxChannels = 0;
+        $.getJSON("@Url.Action("GetAllSpecializations", "Doctor")", function (data) {
+            var items = [];
+            items.push("<option value=''>Select a specialization</option>");
+            $.each(data, function (key, val) {
+                items.push("<option value='" + val.SpecID + "'>" + val.SpecType + " (" + val.SpecDegree + ")</option>");
+            });
+            $("#specID").html(items.join(""));
+
+        });
+
+        $.getJSON("@Url.Action("GetAllServices", "Doctor")", function (data) {
+            var items = [];
+            items.push("<option value=''>Select a service</option>");
+            $.each(data, function (key, val) {
+                items.push("<option value='" + val.ServiceID + "'>" + val.ServiceName + "</option>");
+            });
+            $("#serviceID").html(items.join(""));
+
+        });
+
+        $("#specID").change(function () {
+            $.getJSON("@Url.Action("GetDoctorScheduleBySpecializationID", "Doctor", new { specializationID = "_specializationID" })".replace("_specializationID", $("#specID").val()), function (data) {
+                var items = [];
+                items.push("<option value=''>Select a doctor</option>");
+                $.each(data, function (key, val) {
+                    var date = new Date(parseInt(val.StartDateTime.substr(6)));
+                    items.push("<option value='" + val.WorkID + "'><b>" + val.DoctorName + "</b> ( " + val.HospitalName + " | " + val.RoomName + " | " + date.toLocaleString() + " )</option>");
+                });
+                $("#workID").html(items.join(""));
+
+            });
+        });
+
+        @*$("#roomID").change(function () {
+            $.getJSON("@Url.Action("GetRooms", "Hospital", new { hospitalID = "_hospitalID" })".replace("_hospitalID", $("#hospitalID").val()), function (data) {
+                $.each(data, function (key, val) {
+                    if ($("#roomID").val() == val.RoomID) {
+                        $("#maxChannels").val(val.Capacity);
+                        maxChannels = val.Capacity;
+                    }
+                });
+            });
+        });*@
+
+
+    </script>
+}
+
+@*@Html.DisplayFor(m => ViewData["aa"])*@

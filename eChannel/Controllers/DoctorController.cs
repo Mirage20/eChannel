@@ -95,5 +95,24 @@ namespace eChannel.Controllers
             ViewData["hospitals"] = hospitals;
             return PartialView();
         }
+
+        public ActionResult GetAllSpecializations()
+        {
+            List<Specialization> specializations = DBContext.GetInstance().FindAllInSpecialization();
+            return Json(specializations, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetAllServices()
+        {
+            List<Service> services = DBContext.GetInstance().FindAllInService();
+            return Json(services, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetDoctorScheduleBySpecializationID(string specializationID)
+        {
+            List<DoctorSchedule> schedules = DBContext.GetInstance().FindAllDoctorScheduleBySpecializationID(Convert.ToInt32(specializationID));
+
+            return Json(schedules, JsonRequestBehavior.AllowGet);
+        }
     }
 }

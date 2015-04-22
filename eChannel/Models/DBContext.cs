@@ -469,6 +469,279 @@ namespace eChannel.Models
             return doctorSchedules;
         }
 
+        public List<DoctorSchedule> FindAllDoctorScheduleBySpecializationID(int specializationID)
+        {
+
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "SELECT * FROM doctor_specialization WHERE specialization_id=@value;";
+            command.Parameters.AddWithValue("@value", specializationID);
+            MySqlDataReader reader = command.ExecuteReader();
+            List<int> doctorIDs = new List<int>();
+            while (reader.Read())
+            {
+                doctorIDs.Add(reader.GetInt32("doctor_id"));
+            }
+            DbConnection.Close();
+
+            List<DoctorSchedule> doctorSchedules = new List<DoctorSchedule>();
+            for(int i=0;i<doctorIDs.Count;i++)
+            {     
+                doctorSchedules.AddRange(FindAllDoctorSchedule(doctorIDs[i]));
+            }
+
+            DbConnection.Close();
+            return doctorSchedules;
+        }
+
+        public DoctorSchedule FindOneInDoctorSchedule(int workID)
+        {
+
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "SELECT room_work.work_id,CONCAT(doctor.first_name,' ',doctor.last_name) AS doctor_name,hospital.name AS hospital_name,room.room_name,start_datetime,end_datetime,max_channels,COUNT(channel.work_id) AS applied_patients " +
+                "FROM e_channel.room_work " +
+                "LEFT JOIN e_channel.room ON room_work.room_id=room.room_id " +
+                "JOIN e_channel.hospital ON room.hospital_id=hospital.hospital_id " +
+                "JOIN e_channel.doctor ON room_work.doctor_id=doctor.doctor_id " +
+                "LEFT JOIN e_channel.channel ON (room_work.work_id = channel.work_id) " +
+                "WHERE room_work.work_id=@value GROUP BY room_work.work_id";
+            command.Parameters.AddWithValue("@value", workID);
+            MySqlDataReader reader = command.ExecuteReader();
+            DoctorSchedule existing = null;
+            if (reader.Read())
+            {
+                existing = new DoctorSchedule();
+                existing.WorkID = reader.GetInt32("work_id");
+                existing.DoctorName = reader.GetString("doctor_name");
+                existing.HospitalName = reader.GetString("hospital_name");
+                existing.RoomName = reader.GetString("room_name");
+                existing.StartDateTime = reader.GetDateTime("start_datetime");
+                existing.EndDateTime = reader.GetDateTime("end_datetime");
+                existing.MaxChannels = reader.GetInt32("max_channels");
+                existing.PatientApplied = reader.GetInt32("applied_patients");
+                
+            }
+
+            DbConnection.Close();
+            return existing;
+        }
+
+        #endregion
+
+        #region Specialization
+
+        public Specialization FindOneInSpecialization(string columnName, string value)
+        {
+
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "SELECT * FROM specialization WHERE " + columnName + "=@value";
+            command.Parameters.AddWithValue("@value", value);
+            MySqlDataReader reader = command.ExecuteReader();
+            Specialization existing = null;
+            if (reader.Read())
+            {
+                existing = new Specialization();
+                existing.SpecID = reader.GetInt32("specialization_id");
+                existing.SpecType = reader.GetString("specialization_type");
+                existing.SpecDegree = reader.GetString("degree");
+                
+            }
+
+            DbConnection.Close();
+            return existing;
+        }
+
+        public List<Specialization> FindAllInSpecialization(string columnName, string value)
+        {
+
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "SELECT * FROM specialization WHERE " + columnName + "=@value";
+            command.Parameters.AddWithValue("@value", value);
+            MySqlDataReader reader = command.ExecuteReader();
+            List<Specialization> specializations = new List<Specialization>();
+
+            while (reader.Read())
+            {
+                Specialization existing = new Specialization();
+                existing.SpecID = reader.GetInt32("specialization_id");
+                existing.SpecType = reader.GetString("specialization_type");
+                existing.SpecDegree = reader.GetString("degree");
+                specializations.Add(existing);
+            }
+
+            DbConnection.Close();
+            return specializations;
+        }
+
+        public List<Specialization> FindAllInSpecialization()
+        {
+
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "SELECT * FROM specialization";
+            MySqlDataReader reader = command.ExecuteReader();
+            List<Specialization> specializations = new List<Specialization>();
+
+            while (reader.Read())
+            {
+                Specialization existing = new Specialization();
+                existing.SpecID = reader.GetInt32("specialization_id");
+                existing.SpecType = reader.GetString("specialization_type");
+                existing.SpecDegree = reader.GetString("degree");
+                specializations.Add(existing);
+            }
+
+            DbConnection.Close();
+            return specializations;
+        }
+
+        #endregion
+
+        #region Service
+
+        public Service FindOneInService(string columnName, string value)
+        {
+
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "SELECT * FROM service WHERE " + columnName + "=@value";
+            command.Parameters.AddWithValue("@value", value);
+            MySqlDataReader reader = command.ExecuteReader();
+            Service existing = null;
+            if (reader.Read())
+            {
+                existing = new Service();
+                existing.ServiceID = reader.GetInt32("service_id");
+                existing.ServiceName = reader.GetString("service_name");             
+            }
+
+            DbConnection.Close();
+            return existing;
+        }
+
+        public List<Service> FindAllInService(string columnName, string value)
+        {
+
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "SELECT * FROM service WHERE " + columnName + "=@value";
+            command.Parameters.AddWithValue("@value", value);
+            MySqlDataReader reader = command.ExecuteReader();
+            List<Service> services = new List<Service>();
+
+            while (reader.Read())
+            {
+                Service existing = new Service();
+                existing.ServiceID = reader.GetInt32("service_id");
+                existing.ServiceName = reader.GetString("service_name"); 
+                services.Add(existing);
+            }
+
+            DbConnection.Close();
+            return services;
+        }
+
+        public List<Service> FindAllInService()
+        {
+
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "SELECT * FROM service";
+            MySqlDataReader reader = command.ExecuteReader();
+            List<Service> services = new List<Service>();
+            while (reader.Read())
+            {
+                Service existing = new Service();
+                existing.ServiceID = reader.GetInt32("service_id");
+                existing.ServiceName = reader.GetString("service_name");
+                services.Add(existing);
+            }
+
+            DbConnection.Close();
+            return services;
+        }
+
+        #endregion
+
+
+        #region Channel
+
+        public void CreateChannel(Channel model)
+        {
+            
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "INSERT INTO channel(work_id, patient_id, specialization_id, service_id, channel_number, reason, channel_rating, channel_comments) VALUES(@work_id, @patient_id, @specialization_id, @service_id, @channel_number, @reason, @channel_rating, @channel_comments)";
+            command.Parameters.AddWithValue("@work_id", model.WorkID);
+            command.Parameters.AddWithValue("@patient_id", model.PatientID);
+            command.Parameters.AddWithValue("@specialization_id", model.SpecID);
+            command.Parameters.AddWithValue("@service_id", model.ServiceID);
+            command.Parameters.AddWithValue("@channel_number", model.ChannelNumber);
+            command.Parameters.AddWithValue("@reason", model.Reason);
+            command.Parameters.AddWithValue("@channel_rating", model.ChannelRating);
+            command.Parameters.AddWithValue("@channel_comments", model.ChannelComments);
+            command.ExecuteNonQuery();
+            DbConnection.Close();
+        }
+
+        public Channel FindOneInChannel(string columnName, string value)
+        {
+
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "SELECT * FROM channel WHERE " + columnName + "=@value";
+            command.Parameters.AddWithValue("@value", value);
+            MySqlDataReader reader = command.ExecuteReader();
+            Channel existing = null;
+            if (reader.Read())
+            {
+                existing = new Channel();
+                existing.ChannelID = reader.GetInt32("channel_id");
+                existing.WorkID = reader.GetInt32("work_id");
+                existing.PatientID = reader.GetInt32("patient_id");
+                existing.SpecID = reader.GetInt32("specialization_id");
+                existing.ServiceID = reader.GetInt32("service_id");
+                existing.ChannelNumber = reader.GetInt32("channel_number");
+                existing.Reason = reader.GetString("reason");
+                existing.ChannelRating = reader.GetInt32("channel_rating");
+                existing.ChannelComments = reader.GetString("channel_comments");
+            }
+
+            DbConnection.Close();
+            return existing;
+        }
+
+        public List<Channel> FindAllInChannel(string columnName, string value)
+        {
+
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "SELECT * FROM channel WHERE " + columnName + "=@value";
+            command.Parameters.AddWithValue("@value", value);
+            MySqlDataReader reader = command.ExecuteReader();
+            List<Channel> channels = new List<Channel>();
+            while (reader.Read())
+            {
+                Channel existing = new Channel();
+                existing.ChannelID = reader.GetInt32("channel_id");
+                existing.WorkID = reader.GetInt32("work_id");
+                existing.PatientID = reader.GetInt32("patient_id");
+                existing.SpecID = reader.GetInt32("specialization_id");
+                existing.ServiceID = reader.GetInt32("service_id");
+                existing.ChannelNumber = reader.GetInt32("channel_number");
+                existing.Reason = reader.GetString("reason");
+                existing.ChannelRating = reader.GetInt32("channel_rating");
+                existing.ChannelComments = reader.GetString("channel_comments");
+                channels.Add(existing);
+            }
+
+            DbConnection.Close();
+            return channels;
+        }
+
         #endregion
     }
 }

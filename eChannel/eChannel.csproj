@@ -110,6 +110,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Channel.cs" />
     <Compile Include="Models\DBContext.cs" />
     <Compile Include="Models\Doctor.cs" />
     <Compile Include="Models\DoctorSchedule.cs" />
@@ -119,6 +120,8 @@
     <Compile Include="Models\PatientLogin.cs" />
     <Compile Include="Models\DoctorLogin.cs" />
     <Compile Include="Models\RoomWork.cs" />
+    <Compile Include="Models\Service.cs" />
+    <Compile Include="Models\Specialization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -139,6 +142,8 @@
     <Content Include="Views\Doctor\AddSchedule.cshtml" />
     <Content Include="Views\Doctor\MySchedules.cshtml" />
     <Content Include="Views\Doctor\ViewHospitals.cshtml" />
+    <Content Include="Views\Patient\AddChannel.cshtml" />
+    <Content Include="Views\Patient\MyChannels.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

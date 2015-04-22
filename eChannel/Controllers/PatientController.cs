@@ -60,5 +60,36 @@ namespace eChannel.Controllers
             ViewData["patient"] = existing;
             return View();
         }
+
+        public PartialViewResult AddChannel()
+        {
+
+            if (Request.HttpMethod.Equals("POST"))
+            {
+                Channel newChannel = new Channel()
+                {
+                    WorkID = Convert.ToInt32(Request.Form["work_id"]),
+                    PatientID = (int)Session["userID"],
+                    SpecID = Convert.ToInt32(Request.Form["spec_id"]),
+                    ServiceID = Convert.ToInt32(Request.Form["service_id"]),
+                    ChannelNumber = (DBContext.GetInstance().FindOneInDoctorSchedule(Convert.ToInt32(Request.Form["work_id"])).PatientApplied) + 1,
+                    Reason = Convert.ToString(Request.Form["reason"]),
+                    ChannelRating = 0,
+                    ChannelComments = ""
+                };
+                DBContext.GetInstance().CreateChannel(newChannel);
+                ViewData["success"] = 1;
+
+            }
+
+            return PartialView();
+        }
+
+        public PartialViewResult MyChannels()
+        {
+            //List<DoctorSchedule> schedules = DBContext.GetInstance().FindAllDoctorSchedule((int)Session["userID"]);
+            //ViewData["doctor_schedules"] = schedules;
+            return PartialView();
+        }
     }
 }
