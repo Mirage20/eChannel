@@ -1,10 +1,41 @@
-﻿
-       
-@{
+﻿@{
     ViewBag.Title = "Home";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<div class="row">
+    <h1 style="margin-bottom:60px">Welcome to G6 e Channeling System</h1>
+</div>
+<div class="row">
+    <div class="col-lg-1"></div>
+    <div class="col-lg-5">
+        <div class="bs-component">
+            <div class="jumbotron">
+                <h1>For Doctors</h1>
+                <p>You can register here and add your channeling shedule so the patients can channel you</p>
+                <p>
+                    <a class="btn btn-primary btn-lg" href="@Url.Action("LoginDoctor", "User")">Login</a>
+                    <a class="btn btn-primary btn-lg" href="@Url.Action("RegisterDoctor", "User")">Register</a>
+                </p>
 
- <h1>Hello Home</h1>
+            </div>
+            <div id="source-button" class="btn btn-primary btn-xs" style="display: none;">&lt; &gt;</div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="bs-component">
+            <div class="jumbotron">
+                <h1>For Patients</h1>
+                <p>You can register here and channel a doctor for what yor required.</p>
+                <p>
+                    <a class="btn btn-primary btn-lg" href="@Url.Action("LoginPatient", "User")">Login</a>
+                    <a class="btn btn-primary btn-lg" href="@Url.Action("RegisterPatient", "User")">Register</a>
+                </p>
+
+            </div>
+            <div id="source-button" class="btn btn-primary btn-xs" style="display: none;">&lt; &gt;</div>
+        </div>
+    </div>
+</div>
 
