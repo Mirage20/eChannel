@@ -116,7 +116,7 @@ namespace eChannel
             routes.MapRoute(
                 name: "DoctorViewChannels",
                 url: "dashboard-doctor-view-channels",
-                defaults: new { controller = "Doctor", action = "ViewChannels" }
+                defaults: new { controller = "Doctor", action = "ViewChannels"}
             );
 
             routes.MapRoute(

@@ -803,6 +803,40 @@ namespace eChannel.Models
             DbConnection.Close();
             return doctorChannels;
         }
+
+        public List<DoctorChannel> FindAllInDoctorChannel(int doctorID, string keyword, string column)
+        {
+
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "SELECT channel_id,work_id, CONCAT(first_name,' ',last_name) AS full_name,specialization_type,service_name,channel_number,reason,channel_rating,channel_comments FROM e_channel.channel " +
+                "LEFT JOIN patient ON channel.patient_id=patient.patient_id " +
+                "JOIN specialization ON channel.specialization_id=specialization.specialization_id " +
+                "JOIN service ON channel.service_id=service.service_id " +
+                "WHERE work_id IN (SELECT room_work.work_id FROM room_work WHERE doctor_id =@doctorID) AND " +
+                column + " LIKE @key;";
+            command.Parameters.AddWithValue("@doctorID", doctorID);
+            command.Parameters.AddWithValue("@key", "%" + keyword + "%");
+            MySqlDataReader reader = command.ExecuteReader();
+            List<DoctorChannel> doctorChannels = new List<DoctorChannel>();
+            while (reader.Read())
+            {
+                DoctorChannel existing = new DoctorChannel();
+                existing.ChannelID = reader.GetInt32("channel_id");
+                existing.WorkID = reader.GetInt32("work_id");
+                existing.PatientFullName = reader.GetString("full_name");
+                existing.Spec = reader.GetString("specialization_type");
+                existing.Service = reader.GetString("service_name");
+                existing.ChannelNumber = reader.GetInt32("channel_number");
+                existing.Reason = reader.GetString("reason");
+                existing.ChannelRating = reader.GetInt32("channel_rating");
+                existing.ChannelComments = reader.GetString("channel_comments");
+                doctorChannels.Add(existing);
+            }
+
+            DbConnection.Close();
+            return doctorChannels;
+        }
         #endregion
     }
 }
