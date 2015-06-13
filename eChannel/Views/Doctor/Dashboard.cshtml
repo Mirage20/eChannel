@@ -11,10 +11,13 @@
             <li class="active">
                 @Ajax.ActionLink("My Schedules", "MySchedules", "Doctor", new AjaxOptions() { HttpMethod = "GET", InsertionMode = InsertionMode.Replace, UpdateTargetId = "dashboard-container" })
             </li>
-            <li >
+            <li>
                 @Ajax.ActionLink("Add Schedule", "AddSchedule", "Doctor", new AjaxOptions() { HttpMethod = "GET", InsertionMode = InsertionMode.Replace, UpdateTargetId = "dashboard-container" })
             </li>
-            <li><a href="#">Channels</a></li>
+            <li>
+                @Ajax.ActionLink("Channels", "ViewChannels", "Doctor", new AjaxOptions() { HttpMethod = "GET", InsertionMode = InsertionMode.Replace, UpdateTargetId = "dashboard-container" })
+                
+            </li>
             <li>@Ajax.ActionLink("Hospitals", "ViewHospitals", "Doctor", new AjaxOptions() { HttpMethod = "GET", InsertionMode = InsertionMode.Replace, UpdateTargetId = "dashboard-container" })</li>
         </ul>
     </div>
@@ -27,17 +30,17 @@
 </div>
 
 <script type="text/javascript">
- 
+
     var $thumbs = $('#sideNav li').click(function (e) {
-        e.preventDefault();      
-        $thumbs.removeClass("active");      
+        e.preventDefault();
+        $thumbs.removeClass("active");
         $(this).addClass("active");
     });
 
     $(document).ready(function () {
         $('#sideNav .active a').click();
     });
-    
+
 </script>
 
 

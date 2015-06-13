@@ -96,6 +96,13 @@ namespace eChannel.Controllers
             return PartialView();
         }
 
+        public PartialViewResult ViewChannels()
+        {
+            List<DoctorChannel> doctorChannels = DBContext.GetInstance().FindAllInDoctorChannel((int)Session["userID"]); 
+            ViewData["doctor-channels"] = doctorChannels;
+            return PartialView();
+        }
+
         public ActionResult GetAllSpecializations()
         {
             List<Specialization> specializations = DBContext.GetInstance().FindAllInSpecialization();
@@ -108,10 +115,19 @@ namespace eChannel.Controllers
             return Json(services, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult GetChannelPatient(string channelID)
+        {
+            int patientID= DBContext.GetInstance().FindOneInChannel("channel_id",channelID).PatientID;
+            Patient channelPatient = DBContext.GetInstance().FindOneInPatient("patient_id", patientID.ToString());
+            channelPatient.PatientLogin.Username = "";
+            channelPatient.PatientLogin.Password = "";
+            
+            return Json(channelPatient, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult GetDoctorScheduleBySpecializationID(string specializationID)
         {
             List<DoctorSchedule> schedules = DBContext.GetInstance().FindAllDoctorScheduleBySpecializationID(Convert.ToInt32(specializationID));
-
             return Json(schedules, JsonRequestBehavior.AllowGet);
         }
     }

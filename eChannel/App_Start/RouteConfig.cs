@@ -114,6 +114,12 @@ namespace eChannel
             );
 
             routes.MapRoute(
+                name: "DoctorViewChannels",
+                url: "dashboard-doctor-view-channels",
+                defaults: new { controller = "Doctor", action = "ViewChannels" }
+            );
+
+            routes.MapRoute(
                 name: "GetAllSpecializations",
                 url: "get-all-specializations",
                 defaults: new { controller = "Doctor", action = "GetAllSpecializations" }
@@ -130,6 +136,13 @@ namespace eChannel
             url: "get-doctor-schedule-by-specialization/{specializationID}",
             defaults: new { controller = "Doctor", action = "GetDoctorScheduleBySpecializationID" }
             );
+
+            routes.MapRoute(
+            name: "GetDoctorChannelPatient",
+            url: "get-doctor-channel-patient/{channelID}",
+            defaults: new { controller = "Doctor", action = "GetChannelPatient" }
+            );
+
             //Patient
 
             routes.MapRoute(

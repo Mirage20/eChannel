@@ -176,7 +176,7 @@ namespace eChannel.Models
             command.Parameters.AddWithValue("@firstName", model.FirstName);
             command.Parameters.AddWithValue("@lastName", model.LastName);
             command.Parameters.AddWithValue("@phone", model.PhoneNumber);
-            command.Parameters.AddWithValue("@birthdate",model.Birthdate);
+            command.Parameters.AddWithValue("@birthdate", model.Birthdate);
             command.Parameters.AddWithValue("@gender", model.Gender);
             command.Parameters.AddWithValue("@picture", model.Picture);
             command.Parameters.AddWithValue("@patientID", model.PatientLogin.PatientID);
@@ -255,9 +255,9 @@ namespace eChannel.Models
             command.Parameters.AddWithValue("@value", value);
             MySqlDataReader reader = command.ExecuteReader();
             List<Hospital> hospitals = new List<Hospital>();
-            
+
             while (reader.Read())
-            {             
+            {
                 Hospital existing = new Hospital();
                 existing.HospitalID = reader.GetInt32("hospital_id");
                 existing.Name = reader.GetString("name");
@@ -330,7 +330,7 @@ namespace eChannel.Models
             List<Room> rooms = new List<Room>();
 
             while (reader.Read())
-            {            
+            {
                 Room existing = new Room();
                 existing.RoomID = reader.GetInt32("room_id");
                 existing.HospitalID = reader.GetInt32("hospital_id");
@@ -349,7 +349,7 @@ namespace eChannel.Models
             DbConnection.Open();
             MySqlCommand command = DbConnection.CreateCommand();
             command.CommandText = "SELECT * FROM room;";
-            
+
             MySqlDataReader reader = command.ExecuteReader();
             List<Room> rooms = new List<Room>();
 
@@ -485,8 +485,8 @@ namespace eChannel.Models
             DbConnection.Close();
 
             List<DoctorSchedule> doctorSchedules = new List<DoctorSchedule>();
-            for(int i=0;i<doctorIDs.Count;i++)
-            {     
+            for (int i = 0; i < doctorIDs.Count; i++)
+            {
                 doctorSchedules.AddRange(FindAllDoctorSchedule(doctorIDs[i]));
             }
 
@@ -520,7 +520,7 @@ namespace eChannel.Models
                 existing.EndDateTime = reader.GetDateTime("end_datetime");
                 existing.MaxChannels = reader.GetInt32("max_channels");
                 existing.PatientApplied = reader.GetInt32("applied_patients");
-                
+
             }
 
             DbConnection.Close();
@@ -546,7 +546,7 @@ namespace eChannel.Models
                 existing.SpecID = reader.GetInt32("specialization_id");
                 existing.SpecType = reader.GetString("specialization_type");
                 existing.SpecDegree = reader.GetString("degree");
-                
+
             }
 
             DbConnection.Close();
@@ -615,7 +615,7 @@ namespace eChannel.Models
             {
                 existing = new Service();
                 existing.ServiceID = reader.GetInt32("service_id");
-                existing.ServiceName = reader.GetString("service_name");             
+                existing.ServiceName = reader.GetString("service_name");
             }
 
             DbConnection.Close();
@@ -636,7 +636,7 @@ namespace eChannel.Models
             {
                 Service existing = new Service();
                 existing.ServiceID = reader.GetInt32("service_id");
-                existing.ServiceName = reader.GetString("service_name"); 
+                existing.ServiceName = reader.GetString("service_name");
                 services.Add(existing);
             }
 
@@ -671,7 +671,7 @@ namespace eChannel.Models
 
         public void CreateChannel(Channel model)
         {
-            
+
             DbConnection.Open();
             MySqlCommand command = DbConnection.CreateCommand();
             command.CommandText = "INSERT INTO channel(work_id, patient_id, specialization_id, service_id, channel_number, reason, channel_rating, channel_comments) VALUES(@work_id, @patient_id, @specialization_id, @service_id, @channel_number, @reason, @channel_rating, @channel_comments)";
@@ -742,6 +742,67 @@ namespace eChannel.Models
             return channels;
         }
 
+        public List<Channel> FindAllInChannel()
+        {
+
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "SELECT * FROM channel;";
+            MySqlDataReader reader = command.ExecuteReader();
+            List<Channel> channels = new List<Channel>();
+            while (reader.Read())
+            {
+                Channel existing = new Channel();
+                existing.ChannelID = reader.GetInt32("channel_id");
+                existing.WorkID = reader.GetInt32("work_id");
+                existing.PatientID = reader.GetInt32("patient_id");
+                existing.SpecID = reader.GetInt32("specialization_id");
+                existing.ServiceID = reader.GetInt32("service_id");
+                existing.ChannelNumber = reader.GetInt32("channel_number");
+                existing.Reason = reader.GetString("reason");
+                existing.ChannelRating = reader.GetInt32("channel_rating");
+                existing.ChannelComments = reader.GetString("channel_comments");
+                channels.Add(existing);
+            }
+
+            DbConnection.Close();
+            return channels;
+        }
+
+        #endregion
+
+        #region DoctorChannel
+        public List<DoctorChannel> FindAllInDoctorChannel(int doctorID)
+        {
+
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "SELECT channel_id,work_id, CONCAT(first_name,' ',last_name) AS full_name,specialization_type,service_name,channel_number,reason,channel_rating,channel_comments FROM e_channel.channel " +
+                "LEFT JOIN patient ON channel.patient_id=patient.patient_id " +
+                "JOIN specialization ON channel.specialization_id=specialization.specialization_id " +
+                "JOIN service ON channel.service_id=service.service_id " +
+                "WHERE work_id IN (SELECT room_work.work_id FROM room_work WHERE doctor_id =@doctorID);";
+            command.Parameters.AddWithValue("@doctorID", doctorID);
+            MySqlDataReader reader = command.ExecuteReader();
+            List<DoctorChannel> doctorChannels = new List<DoctorChannel>();
+            while (reader.Read())
+            {
+                DoctorChannel existing = new DoctorChannel();
+                existing.ChannelID = reader.GetInt32("channel_id");
+                existing.WorkID = reader.GetInt32("work_id");
+                existing.PatientFullName = reader.GetString("full_name");
+                existing.Spec = reader.GetString("specialization_type");
+                existing.Service = reader.GetString("service_name");
+                existing.ChannelNumber = reader.GetInt32("channel_number");
+                existing.Reason = reader.GetString("reason");
+                existing.ChannelRating = reader.GetInt32("channel_rating");
+                existing.ChannelComments = reader.GetString("channel_comments");
+                doctorChannels.Add(existing);
+            }
+
+            DbConnection.Close();
+            return doctorChannels;
+        }
         #endregion
     }
 }

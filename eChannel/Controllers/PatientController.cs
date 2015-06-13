@@ -87,8 +87,8 @@ namespace eChannel.Controllers
 
         public PartialViewResult MyChannels()
         {
-            //List<DoctorSchedule> schedules = DBContext.GetInstance().FindAllDoctorSchedule((int)Session["userID"]);
-            //ViewData["doctor_schedules"] = schedules;
+            List<Channel> channels = DBContext.GetInstance().FindAllInChannel("patient_id", Convert.ToString((int)Session["userID"]));
+            ViewData["patient_channels"] = channels;
             return PartialView();
         }
     }
