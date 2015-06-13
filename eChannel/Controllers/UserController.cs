@@ -119,6 +119,8 @@ namespace eChannel.Controllers
                     Session["userID"] = existing.PatientID;
                     Session["username"]=existing.Username;
                     Session["isDoctor"] = false;
+                    Patient patient=DBContext.GetInstance().FindOneInPatient("patient_id",existing.PatientID.ToString());
+                    Session["picture"] = "data:image/png;base64," + Convert.ToBase64String(patient.Picture);
                     return RedirectToAction("Dashboard","Patient");
                 }
                 else
@@ -163,6 +165,8 @@ namespace eChannel.Controllers
                     Session["userID"] = existing.DoctorID;
                     Session["username"] = existing.Username;
                     Session["isDoctor"] = true;
+                    Doctor doctor = DBContext.GetInstance().FindOneInDoctor("doctor_id", existing.DoctorID.ToString());
+                    Session["picture"] = "data:image/png;base64," + Convert.ToBase64String(doctor.Picture);
                     return RedirectToAction("Dashboard", "Doctor");
                 }
                 else

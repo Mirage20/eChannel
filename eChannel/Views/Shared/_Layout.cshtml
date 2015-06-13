@@ -52,23 +52,29 @@
                     }
                     @if (Session["isDoctor"] != null)
                     {
-                        if((bool)Session["isDoctor"])
-                        { 
-                        <li>
-                            <a href="@Url.Action("Dashboard", "Doctor")">
-                                @Session["username"] (Doctor)
-                            </a>
-                        </li>
-                        <li><a href="@Url.Action("Settings", "Doctor")">Settings</a></li>
+                        if ((bool)Session["isDoctor"])
+                        {
+                             <li>
+                                <img style="border:1px solid white" src="@Session["picture"].ToString()" height="48" width="48" />
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Dashboard", "Doctor")">
+                                    @Session["username"] (Doctor)
+                                </a>
+                            </li>
+                            <li><a href="@Url.Action("Settings", "Doctor")">Settings</a></li>
                         }
                         else
                         {
-                           <li>
-                            <a href="@Url.Action("Dashboard", "Patient")">
-                                @Session["username"] (Patient)
-                            </a>
-                        </li> 
-                        <li><a href="@Url.Action("Settings", "Patient")">Settings</a></li>
+                            <li>
+                                <img style="border:1px solid white" src="@Session["picture"].ToString()" height="48" width="48" />
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Dashboard", "Patient")">
+                                    @Session["username"] (Patient)
+                                </a>
+                            </li>
+                            <li><a href="@Url.Action("Settings", "Patient")">Settings</a></li>
                         }
                         <li><a href="@Url.Action("Logout", "User")">Logout</a></li>
                     }
@@ -83,10 +89,10 @@
     </div>
 
 
-    
-    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script> 
-    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script> 
-    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>  
+
+    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
     <script type="text/javascript" src="@Url.Content("~/Scripts/custom.js")"></script>
 
 </body>

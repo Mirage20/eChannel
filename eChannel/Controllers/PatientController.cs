@@ -53,6 +53,7 @@ namespace eChannel.Controllers
                     OldExisting.Picture = data;
                 }
                 DBContext.GetInstance().UpdatePatient(OldExisting);
+                Session["picture"] = "data:image/png;base64," + Convert.ToBase64String(OldExisting.Picture);
                 ViewData["success"] = 1;
             }
 
