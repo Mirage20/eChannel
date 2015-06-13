@@ -9,7 +9,7 @@
 <div class="row">
     <div class="col-lg-2">
         <ul id="sideNav" class="nav nav-pills nav-stacked" style="border-right: 1px solid #2780E3">
-            <li class="active">
+            <li id="myChannel" class="active">
                 @Ajax.ActionLink("My Channels", "MyChannels", "Patient", new AjaxOptions() { HttpMethod = "GET", InsertionMode = InsertionMode.Replace, UpdateTargetId = "dashboard-container" })
             </li>
             <li>

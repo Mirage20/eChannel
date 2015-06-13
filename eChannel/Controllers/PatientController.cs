@@ -87,9 +87,31 @@ namespace eChannel.Controllers
 
         public PartialViewResult MyChannels()
         {
-            List<Channel> channels = DBContext.GetInstance().FindAllInChannel("patient_id", Convert.ToString((int)Session["userID"]));
-            ViewData["patient_channels"] = channels;
+            List<PatientChannel> patientChannels = DBContext.GetInstance().FindAllInPatientChannel((int)Session["userID"]);
+            ViewData["patient_channels"] = patientChannels;
             return PartialView();
+        }
+
+        public ActionResult GetChannel(string channelID)
+        {
+            if (Request.HttpMethod.Equals("POST"))
+            {
+                int postChannelID = Convert.ToInt32(Request.Form["channel_id"]);
+                int rating = Convert.ToInt32(Request.Form["rating"]);
+                string comment = Request.Form["comment"];
+                Channel channel = DBContext.GetInstance().FindOneInChannel("channel_id", postChannelID.ToString());
+                channel.ChannelRating = rating;
+                channel.ChannelComments = comment;
+                DBContext.GetInstance().UpdateChannel(channel);
+                return null;
+            }
+            else
+            {
+                Channel channel = DBContext.GetInstance().FindOneInChannel("channel_id", channelID);
+                return Json(channel, JsonRequestBehavior.AllowGet);
+            }
+
+            
         }
     }
 }

@@ -1,29 +1,121 @@
 ﻿@if (ViewData["patient_channels"] != null)
 {
-    List<eChannel.Models.Channel> channels = (List<eChannel.Models.Channel>)ViewData["patient_channels"];
+    <style>
+        .popup-content {
+            display: none;
+            position: absolute;
+            width: 60%;
+            height: 40vh;
+            padding: 20px 50px;
+            z-index: 4;
+            overflow: auto;
+            text-align: left;
+            top: 16vh;
+            left: 20%;
+            border: 1px solid black;
+        }
+
+
+        .popup-close {
+            position: absolute;
+            left: 92%;
+            font-size: 18px;
+        }
+    </style>
+
+    List<eChannel.Models.PatientChannel> patientChannels = (List<eChannel.Models.PatientChannel>)ViewData["patient_channels"];
 
     <div class="col-lg-9">
-        <table class="table table-striped table-hover ">
+        <table id="patientChannelTable" class="table table-striped table-hover ">
             <tbody>
                 <tr>
-                    <td><b>Channel ID</b></td>
-                    <td><b>Channel Number</b></td>
-                    <td><b>Reason</b></td>
-                    
+                    <td>Channel ID</td>
+                    <td>Doctor Name</td>
+                    <td>Specialization</td>
+                    <td>Service</td>
+                    <td>Channel Number</td>
+                    <td>Reason</td>
+                    <td>Hospital Name</td>
+                    <td>Hospital Location</td>
+                    <td>Channel Rating</td>
+
+
                 </tr>
-                @foreach (eChannel.Models.Channel channel in channels)
+                @foreach (eChannel.Models.PatientChannel patientChannel in patientChannels)
                 {
 
-                    <tr @if (channel.ChannelRating == 0) { Write("class=success"); }>
+                    <tr @if (patientChannel.ChannelRating == 0) { Write("class=success"); }>
 
-                        <td>@channel.ChannelID</td>
-                        <td>@channel.ChannelNumber</td>
-                        <td>@channel.Reason</td>
-                        
+                        <td>@patientChannel.ChannelID</td>
+                        <td>@patientChannel.DoctorFullName</td>
+                        <td>@patientChannel.Spec</td>
+                        <td>@patientChannel.Service</td>
+                        <td>@patientChannel.ChannelNumber</td>
+                        <td>@patientChannel.Reason</td>
+                        <td>@patientChannel.HospitalName</td>
+                        <td>@patientChannel.HospitalLocation</td>
+                        <td><button id="@patientChannel.ChannelID" type="button" class="btn btn-primary btn-xs" onclick="rate_now_click(this.id)">Rate Now</button></td>
+
                     </tr>
                 }
             </tbody>
         </table>
+
+        <div id="popup-rating-patient" class="popup-content well well-lg" style="display: none;">
+
+            <a id="hide-popup-rating-patient" class="popup-close" href="javascript:void(0)">X</a>
+
+            <label class="control-label">Rating</label>
+
+            <input id="ratingValue" class="form-control" type="number" name="rating" value="0" />
+
+
+            <input type="hidden" id="channelID" name="channel-id" />
+            <label class="control-label">Comment</label>
+
+            <textarea class="form-control" rows="3" id="textAreaComment" name="comment"></textarea>
+            <br />
+            <button type="button" class="btn btn-primary btn-xs" onclick="rate_submit()">Submit</button>
+
+
+
+        </div>
+
     </div>
+
+
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+           
+            $('#hide-popup-rating-patient').click(function () {
+                document.getElementById('popup-rating-patient').style.display = 'none';
+            });
+        });
+
+        function rate_submit() {
+            $.post("@Url.Action("GetChannel", "Patient",new { channelID = "_channelID" })".replace("_channelID", $('#channelID').val()), {
+                channel_id: $('#channelID').val(),
+                rating: $('#ratingValue').val(),
+                comment: $('#textAreaComment').val()
+            });
+            document.getElementById('popup-rating-patient').style.display = 'none';
+            $('#myChannel a').trigger('click');
+        }
+
+        function rate_now_click(btn_id) {
+            document.getElementById('channelID').value = btn_id;
+            $.getJSON("@Url.Action("GetChannel", "Patient", new { channelID = "_channelID" })".replace("_channelID", btn_id), function (data) {
+
+                document.getElementById('ratingValue').value = data.ChannelRating;
+                document.getElementById('textAreaComment').value = data.ChannelComments;
+            });
+            document.getElementById('popup-rating-patient').style.display = 'block';
+        }
+
+        
+
+    </script>
 }
 

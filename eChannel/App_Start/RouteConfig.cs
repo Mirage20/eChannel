@@ -157,6 +157,12 @@ namespace eChannel
                 defaults: new { controller = "Patient", action = "MyChannels" }
             );
 
+            routes.MapRoute(
+            name: "GetChannel",
+            url: "get-patient-channel/{channelID}",
+            defaults: new { controller = "Patient", action = "GetChannel" }
+            );
+
             //routes.MapRoute(
             //    name: "DoctorViewHospitals",
             //    url: "dashboard-doctor-view-hospitals",

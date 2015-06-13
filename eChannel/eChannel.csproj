@@ -110,6 +110,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\PatientChannel.cs" />
     <Compile Include="Models\DoctorChannel.cs" />
     <Compile Include="Models\Channel.cs" />
     <Compile Include="Models\DBContext.cs" />
