@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Login as Patient";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -36,6 +35,23 @@
                 </fieldset>
             </form>
         </div>
+        @if (ViewData["success"] != null && (int)ViewData["success"] == 1)
+        {
+            <div class="alert alert-dismissible alert-success">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                Login Success
+            </div>
+        }
+        else
+        {
+            if ((int)ViewData["hasError"] == 1)
+            {
+                <div class="alert alert-dismissible alert-danger">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    @ViewData["errorMsg"].ToString()
+                </div>
+            }
+        }
     </div>
 </div>
-@Html.DisplayFor(m => ViewData);
+@*@Html.DisplayFor(m => ViewData);*@
