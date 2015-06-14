@@ -898,6 +898,48 @@ namespace eChannel.Models
             return patientChannels;
         }
 
+
+        public List<PatientChannel> FindAllInPatientChannel(int patientID, string keyword, string column)
+        {
+
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "SELECT channel_id,channel.work_id,specialization_type,service_name,channel_number,reason,channel_rating,channel_comments,doctor.doctor_id,CONCAT(doctor.first_name,' ',doctor.last_name) AS full_name,hospital.hospital_id,hospital.name,hospital.location FROM e_channel.channel " +
+                "LEFT JOIN room_work ON channel.work_id=room_work.work_id " +
+                "JOIN doctor ON doctor.doctor_id=room_work.doctor_id " +
+                "JOIN room ON room.room_id=room_work.room_id " +
+                "JOIN hospital ON hospital.hospital_id=room.hospital_id " +
+                "JOIN specialization ON channel.specialization_id=specialization.specialization_id " +
+                "JOIN service ON channel.service_id=service.service_id " +
+                "WHERE channel.patient_id=@patientID " +
+                "AND " + column + " LIKE @key " +
+                "ORDER BY channel_id DESC;";
+            command.Parameters.AddWithValue("@patientID", patientID);
+            command.Parameters.AddWithValue("@key", "%" + keyword + "%");
+            MySqlDataReader reader = command.ExecuteReader();
+            List<PatientChannel> patientChannels = new List<PatientChannel>();
+            while (reader.Read())
+            {
+                PatientChannel existing = new PatientChannel();
+                existing.ChannelID = reader.GetInt32("channel_id");
+                existing.WorkID = reader.GetInt32("work_id");
+                existing.Spec = reader.GetString("specialization_type");
+                existing.Service = reader.GetString("service_name");
+                existing.ChannelNumber = reader.GetInt32("channel_number");
+                existing.Reason = reader.GetString("reason");
+                existing.ChannelRating = reader.GetInt32("channel_rating");
+                existing.ChannelComments = reader.GetString("channel_comments");
+                existing.DoctorID = reader.GetInt32("doctor_id");
+                existing.DoctorFullName = reader.GetString("full_name");
+                existing.HospitalID = reader.GetInt32("hospital_id");
+                existing.HospitalName = reader.GetString("name");
+                existing.HospitalLocation = reader.GetString("location");
+                patientChannels.Add(existing);
+            }
+
+            DbConnection.Close();
+            return patientChannels;
+        }
         #endregion
     }
 }

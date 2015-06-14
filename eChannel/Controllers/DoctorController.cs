@@ -114,7 +114,6 @@ namespace eChannel.Controllers
                 else if (Request.Form["by"].Equals("patientLastName"))
                 {
                     doctorChannels = DBContext.GetInstance().FindAllInDoctorChannel((int)Session["userID"], keyword, "last_name");
-
                 }
                 else if (Request.Form["by"].Equals("service"))
                 {

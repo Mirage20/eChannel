@@ -88,8 +88,58 @@ namespace eChannel.Controllers
 
         public PartialViewResult MyChannels()
         {
-            List<PatientChannel> patientChannels = DBContext.GetInstance().FindAllInPatientChannel((int)Session["userID"]);
-            ViewData["patient_channels"] = patientChannels;
+            if (Request.HttpMethod.Equals("POST"))
+            {
+                string keyword = Request.Form["key"];
+                List<PatientChannel> patientChannels = null;
+                if (Request.Form["by"].Equals("doctorFirstName"))
+                {
+                    patientChannels = DBContext.GetInstance().FindAllInPatientChannel((int)Session["userID"], keyword, "doctor.first_name");
+                }
+                else if (Request.Form["by"].Equals("doctorLastName"))
+                {
+                    patientChannels = DBContext.GetInstance().FindAllInPatientChannel((int)Session["userID"], keyword, "doctor.last_name");
+                }
+                else if (Request.Form["by"].Equals("spec"))
+                {
+                    patientChannels = DBContext.GetInstance().FindAllInPatientChannel((int)Session["userID"], keyword, "specialization_type");
+                }
+                else if (Request.Form["by"].Equals("service"))
+                {
+                    patientChannels = DBContext.GetInstance().FindAllInPatientChannel((int)Session["userID"], keyword, "service_name");
+                }
+                else if (Request.Form["by"].Equals("channelNumber"))
+                {
+                    patientChannels = DBContext.GetInstance().FindAllInPatientChannel((int)Session["userID"], keyword, "channel_number");
+                }
+                else if (Request.Form["by"].Equals("reason"))
+                {
+                    patientChannels = DBContext.GetInstance().FindAllInPatientChannel((int)Session["userID"], keyword, "reason");
+                }
+                else if (Request.Form["by"].Equals("hospitalName"))
+                {
+                    patientChannels = DBContext.GetInstance().FindAllInPatientChannel((int)Session["userID"], keyword, "hospital.name");
+                }
+                else if (Request.Form["by"].Equals("hospitalLocation"))
+                {
+                    patientChannels = DBContext.GetInstance().FindAllInPatientChannel((int)Session["userID"], keyword, "hospital.location");
+                }
+
+                ViewData["patient_channels"] = patientChannels;
+
+                if (keyword.Equals(""))
+                {
+                    patientChannels = DBContext.GetInstance().FindAllInPatientChannel((int)Session["userID"]);
+                    ViewData["patient_channels"] = patientChannels;
+                }
+
+            }
+            else
+            {
+                List<PatientChannel> patientChannels = DBContext.GetInstance().FindAllInPatientChannel((int)Session["userID"]);
+                ViewData["patient_channels"] = patientChannels;
+            }
+
             return PartialView();
         }
 
@@ -112,7 +162,6 @@ namespace eChannel.Controllers
                 return Json(channel, JsonRequestBehavior.AllowGet);
             }
 
-            
         }
     }
 }
