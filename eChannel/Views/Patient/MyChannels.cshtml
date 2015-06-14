@@ -100,7 +100,7 @@
 
             <label class="control-label">Rating</label>
 
-            <input id="ratingValue" class="form-control" type="number" name="rating" value="0" />
+            <input id="ratingValue" class="form-control" type="number" name="rating" value="0" min="0" max="10"/>
 
 
             <input type="hidden" id="channelID" name="channel-id" />
@@ -125,6 +125,12 @@
             $('#hide-popup-rating-patient').click(function () {
                 document.getElementById('popup-rating-patient').style.display = 'none';
             });
+        });
+
+        $("#ratingValue").change(function () {
+            if ($("#ratingValue").val() > 10 || $("#ratingValue").val() < 0 ) {
+                $("#ratingValue").val(0);
+            }
         });
 
         function rate_submit() {
