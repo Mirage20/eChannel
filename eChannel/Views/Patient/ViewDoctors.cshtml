@@ -1,0 +1,91 @@
+﻿<div class="col-lg-4"></div>
+<div class="col-lg-5">
+    @using (Ajax.BeginForm("ViewDoctors", "Patient", new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "dashboard-container" }, new { @class = "navbar-form navbar-left", @role = "search" }))
+    {
+        <div class="form-group">
+            <label class="control-label" for="inputSmall">Search</label>
+            <input class="form-control input-sm" type="text" id="inputSmall" name="key">
+            <label class="control-label" for="inputSmall">By</label>
+        </div>
+        <div class="form-group">
+
+            <div class="col-lg-10">
+                <select class="form-control input-sm" id="select" name="by">
+
+                    <option value="doctorFirstName">First Name</option>
+                    <option value="doctorLastName">Last Name</option>
+                    <option value="spec">Specilization</option>
+                    <option value="gender">Gender</option>
+                    <option value="avgRating">Average Rating</option>
+                    
+                </select>
+
+            </div>
+        </div>
+        <button type="submit" class="btn btn-default btn-sm">Search</button>
+    }
+
+
+</div>
+<br />
+
+@if (ViewData["doctor_details"] != null)
+{
+
+
+    List<eChannel.Models.DoctorDetail> doctorDetails = (List<eChannel.Models.DoctorDetail>)ViewData["doctor_details"];
+
+    <div class="col-lg-9">
+        <table id="patientChannelTable" class="table table-striped table-hover ">
+            <tbody>
+                <tr>
+                    <td><b>Picture</b></td>
+                    <td><b>Doctor Name</b></td>
+                    <td><b>Phone</b></td>
+                    <td><b>Email</b></td>
+                    <td><b>Gender</b></td>
+                    <td><b>Average Rating</b></td>
+                    
+
+                </tr>
+                @foreach (eChannel.Models.DoctorDetail doctorDetail in doctorDetails)
+                {
+
+                    <tr @if (doctorDetail.AverageRating >= 7.5) { Write("class=success"); } else if (doctorDetail.AverageRating <= 2.5) { Write("class=danger"); }>
+                        <td>
+                            <img style="border:1px solid white" src="@("data:image/png;base64," +Convert.ToBase64String(doctorDetail.Picture))" height="48" width="48" />
+                        </td>
+                        <td>@(doctorDetail.FirstName + " " + doctorDetail.LastName)</td>
+                        <td>@doctorDetail.PhoneNumber</td>
+                        <td>@doctorDetail.Email</td>
+                        <td>@doctorDetail.Gender</td>
+                        <td>@doctorDetail.AverageRating</td>
+
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div id="popup-rating-patient" class="popup-content well well-lg" style="display: none;">
+
+            <a id="hide-popup-rating-patient" class="popup-close" href="javascript:void(0)">X</a>
+
+            <label class="control-label">Rating</label>
+
+            <input id="ratingValue" class="form-control" type="number" name="rating" value="0" />
+
+
+            <input type="hidden" id="channelID" name="channel-id" />
+            <label class="control-label">Comment</label>
+
+            <textarea class="form-control" rows="3" id="textAreaComment" name="comment"></textarea>
+            <br />
+            <button type="button" class="btn btn-primary btn-xs" onclick="rate_submit()">Submit</button>
+
+
+
+        </div>
+
+    </div>
+}

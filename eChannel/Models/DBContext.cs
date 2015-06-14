@@ -941,5 +941,112 @@ namespace eChannel.Models
             return patientChannels;
         }
         #endregion
+
+        #region DoctorDetails
+
+        public List<DoctorDetail> FindAllInDoctorDetails()
+        {
+
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "SELECT *,length(picture) as p_size FROM e_channel.doctor_details ORDER BY first_name,last_name;";
+            MySqlDataReader reader = command.ExecuteReader();
+            List<DoctorDetail> doctorChannels = new List<DoctorDetail>();
+            while (reader.Read())
+            {
+                DoctorDetail existing = new DoctorDetail();
+                existing.DoctorID = reader.GetInt32("doctor_id");
+                existing.FirstName = reader.GetString("first_name");
+                existing.LastName = reader.GetString("last_name");
+                existing.PhoneNumber = reader.GetString("phone");
+                existing.Gender = reader.GetString("gender");
+                existing.Email = reader.GetString("email");
+                existing.AverageRating = reader.GetFloat("avg_rating");
+
+                byte[] picture = new byte[reader.GetUInt32("p_size")];
+                reader.GetBytes(reader.GetOrdinal("picture"), 0, picture, 0, picture.Length);
+                existing.Picture = picture;
+
+                doctorChannels.Add(existing);
+            }
+
+            DbConnection.Close();
+            return doctorChannels;
+        }
+
+        public List<DoctorDetail> FindAllInDoctorDetails(string keyword, string column)
+        {
+
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            if (column.Equals("doctor_id"))
+            {
+                command.CommandText = "SELECT *,length(picture) as p_size FROM e_channel.doctor_details " +
+                   "WHERE " + column + " = @key " +
+                   "ORDER BY first_name,last_name;";
+                command.Parameters.AddWithValue("@key", keyword);
+            }
+            else
+            {
+                command.CommandText = "SELECT *,length(picture) as p_size FROM e_channel.doctor_details " +
+                    "WHERE " + column + " LIKE @key " +
+                    "ORDER BY first_name,last_name;";
+                command.Parameters.AddWithValue("@key", "%" + keyword + "%");
+            }
+            MySqlDataReader reader = command.ExecuteReader();
+            List<DoctorDetail> doctorChannels = new List<DoctorDetail>();
+            while (reader.Read())
+            {
+                DoctorDetail existing = new DoctorDetail();
+                existing.DoctorID = reader.GetInt32("doctor_id");
+                existing.FirstName = reader.GetString("first_name");
+                existing.LastName = reader.GetString("last_name");
+                existing.PhoneNumber = reader.GetString("phone");
+                existing.Gender = reader.GetString("gender");
+                existing.Email = reader.GetString("email");
+                existing.AverageRating = reader.GetFloat("avg_rating");
+
+                byte[] picture = new byte[reader.GetUInt32("p_size")];
+                reader.GetBytes(reader.GetOrdinal("picture"), 0, picture, 0, picture.Length);
+                existing.Picture = picture;
+
+                doctorChannels.Add(existing);
+            }
+
+            DbConnection.Close();
+            return doctorChannels;
+        }
+
+        #endregion
+
+        #region DoctorSpecialization
+
+        public List<DoctorSpecialization> FindAllInDoctorSpecialization(string keyword, string column)
+        {
+
+            DbConnection.Open();
+            MySqlCommand command = DbConnection.CreateCommand();
+            command.CommandText = "SELECT doctor_specialization.specialization_id,doctor_id,university,specialization_type,degree FROM doctor_specialization " +
+                "LEFT JOIN specialization ON specialization.specialization_id=doctor_specialization.specialization_id " +
+                "WHERE " + column + " LIKE @key;";
+            command.Parameters.AddWithValue("@key", "%" + keyword + "%");
+            MySqlDataReader reader = command.ExecuteReader();
+            List<DoctorSpecialization> doctorChannels = new List<DoctorSpecialization>();
+            while (reader.Read())
+            {
+                DoctorSpecialization existing = new DoctorSpecialization();
+                existing.DoctorID = reader.GetInt32("doctor_id");
+                existing.SpecID = reader.GetInt32("specialization_id");
+                existing.University = reader.GetString("university");
+                existing.SpecType = reader.GetString("specialization_type");
+                existing.SpecDegree = reader.GetString("degree");
+                doctorChannels.Add(existing);
+            }
+
+            DbConnection.Close();
+            return doctorChannels;
+        }
+
+        #endregion
     }
 }

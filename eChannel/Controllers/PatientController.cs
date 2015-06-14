@@ -143,6 +143,59 @@ namespace eChannel.Controllers
             return PartialView();
         }
 
+        public PartialViewResult ViewDoctors()
+        {
+
+            if (Request.HttpMethod.Equals("POST"))
+            {
+                string keyword = Request.Form["key"];
+                List<DoctorDetail> doctorDetails = null;
+                if (Request.Form["by"].Equals("doctorFirstName"))
+                {
+                    doctorDetails = DBContext.GetInstance().FindAllInDoctorDetails(keyword, "first_name");
+                }
+                else if (Request.Form["by"].Equals("doctorLastName"))
+                {
+                    doctorDetails = DBContext.GetInstance().FindAllInDoctorDetails(keyword, "last_name");
+                }
+                else if (Request.Form["by"].Equals("spec"))
+                {
+                    List<DoctorSpecialization> doctorSpecialization = DBContext.GetInstance().FindAllInDoctorSpecialization(keyword, "specialization_type");
+                    List<DoctorDetail> tmpDoctorDetail = new List<DoctorDetail>();
+                    foreach(DoctorSpecialization doctorSpec in doctorSpecialization)
+                    {
+                        tmpDoctorDetail.AddRange(DBContext.GetInstance().FindAllInDoctorDetails(doctorSpec.DoctorID.ToString(), "doctor_id"));
+                    }
+                    doctorDetails = tmpDoctorDetail;
+                }
+                else if (Request.Form["by"].Equals("gender"))
+                {
+                    doctorDetails = DBContext.GetInstance().FindAllInDoctorDetails(keyword, "gender");
+                }
+                else if (Request.Form["by"].Equals("avgRating"))
+                {
+                    doctorDetails = DBContext.GetInstance().FindAllInDoctorDetails(keyword, "avg_rating");
+                }
+
+
+                ViewData["doctor_details"] = doctorDetails;
+
+                if (keyword.Equals(""))
+                {
+                    doctorDetails = DBContext.GetInstance().FindAllInDoctorDetails();
+                    ViewData["doctor_details"] = doctorDetails;
+                }
+
+            }
+            else
+            {
+                List<DoctorDetail> doctorDetails = DBContext.GetInstance().FindAllInDoctorDetails();
+                ViewData["doctor_details"] = doctorDetails;
+            }
+
+            return PartialView();
+        }
+
         public ActionResult GetChannel(string channelID)
         {
             if (Request.HttpMethod.Equals("POST"))

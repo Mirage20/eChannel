@@ -15,7 +15,7 @@
             <li>
                 @Ajax.ActionLink("Add Channel", "AddChannel", "Patient", new AjaxOptions() { HttpMethod = "GET", InsertionMode = InsertionMode.Replace, UpdateTargetId = "dashboard-container" })
             </li>
-            <li><a href="#">Channels</a></li>
+            <li>@Ajax.ActionLink("Doctors", "ViewDoctors", "Patient", new AjaxOptions() { HttpMethod = "GET", InsertionMode = InsertionMode.Replace, UpdateTargetId = "dashboard-container" })</li>
             <li>@Ajax.ActionLink("Hospitals", "ViewHospitals", "Doctor", new AjaxOptions() { HttpMethod = "GET", InsertionMode = InsertionMode.Replace, UpdateTargetId = "dashboard-container" })</li>
         </ul>
     </div>
