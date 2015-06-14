@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using eChannel.Models;
+using System.Web.Helpers;
 namespace eChannel.Controllers
 {
     public class UserController : Controller
@@ -39,7 +40,7 @@ namespace eChannel.Controllers
                 DoctorLogin newDoctorLogin = new DoctorLogin()
                 {
                     Email = Request.Form["email"],
-                    Password = Request.Form["password"],
+                    Password =Crypto.SHA256(Request.Form["password"].ToString()),
                     Username = Request.Form["username"]
                 };
                 DBContext.GetInstance().CreateDoctorLogin(newDoctorLogin);
@@ -80,7 +81,7 @@ namespace eChannel.Controllers
                 PatientLogin newDoctorLogin = new PatientLogin()
                 {
                     Email = Request.Form["email"],
-                    Password = Request.Form["password"],
+                    Password = Crypto.SHA256(Request.Form["password"].ToString()),
                     Username = Request.Form["username"]
                 };
                 DBContext.GetInstance().CreatePatientLogin(newDoctorLogin);
@@ -112,9 +113,9 @@ namespace eChannel.Controllers
             if (Request.HttpMethod.Equals("POST"))
             {
                 PatientLogin existing=DBContext.GetInstance().FindOneInPatientLogin("username", Request.Form["username"]);
-                if (existing != null && existing.Password.Equals(Request.Form["password"]))
+                if (existing != null && existing.Password.Equals(Crypto.SHA256(Request.Form["password"].ToString())))
                 {
-
+                    
                     ViewData["success"] = 1;
                     Session["userID"] = existing.PatientID;
                     Session["username"]=existing.Username;
@@ -158,7 +159,7 @@ namespace eChannel.Controllers
             if (Request.HttpMethod.Equals("POST"))
             {
                 DoctorLogin existing = DBContext.GetInstance().FindOneInDoctorLogin("username", Request.Form["username"]);
-                if (existing != null && existing.Password.Equals(Request.Form["password"]))
+                if (existing != null && existing.Password.Equals(Crypto.SHA256(Request.Form["password"].ToString())))
                 {
                     
                     ViewData["success"] = 1;
