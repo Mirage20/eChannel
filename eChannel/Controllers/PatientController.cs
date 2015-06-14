@@ -73,13 +73,13 @@ namespace eChannel.Controllers
                     PatientID = (int)Session["userID"],
                     SpecID = Convert.ToInt32(Request.Form["spec_id"]),
                     ServiceID = Convert.ToInt32(Request.Form["service_id"]),
-                    ChannelNumber = (DBContext.GetInstance().FindOneInDoctorSchedule(Convert.ToInt32(Request.Form["work_id"])).PatientApplied) + 1,
+                    ChannelNumber = 0,
                     Reason = Convert.ToString(Request.Form["reason"]),
                     ChannelRating = 0,
                     ChannelComments = ""
                 };
-                DBContext.GetInstance().CreateChannel(newChannel);
-                ViewData["success"] = 1;
+                bool isSuccess=DBContext.GetInstance().CreateTransactionalChannel(newChannel);
+                ViewData["success"] = Convert.ToInt32(isSuccess);
 
             }
 

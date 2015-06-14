@@ -393,7 +393,7 @@ namespace eChannel.Models
             {
                 MySqlCommand command = DbConnection.CreateCommand();
                 command.CommandText = "SELECT * FROM room_work WHERE room_id=@value " +
-                "AND (start_datetime < @end "+
+                "AND (start_datetime < @end " +
                 "AND end_datetime > @start);";
                 command.Parameters.AddWithValue("@value", model.RoomID);
                 command.Parameters.AddWithValue("@start", model.StartDateTime);
@@ -729,6 +729,70 @@ namespace eChannel.Models
             command.Parameters.AddWithValue("@channel_comments", model.ChannelComments);
             command.ExecuteNonQuery();
             DbConnection.Close();
+        }
+
+        public bool CreateTransactionalChannel(Channel model)
+        {
+
+            DbConnection.Open();
+            MySqlTransaction transaction = DbConnection.BeginTransaction();
+
+            try
+            {
+                MySqlCommand command = DbConnection.CreateCommand();
+                command.CommandText = "SELECT room_work.work_id,CONCAT(doctor.first_name,' ',doctor.last_name) AS doctor_name,hospital.name AS hospital_name,room.room_name,start_datetime,end_datetime,max_channels,COUNT(channel.work_id) AS applied_patients " +
+                    "FROM e_channel.room_work " +
+                    "LEFT JOIN e_channel.room ON room_work.room_id=room.room_id " +
+                    "JOIN e_channel.hospital ON room.hospital_id=hospital.hospital_id " +
+                    "JOIN e_channel.doctor ON room_work.doctor_id=doctor.doctor_id " +
+                    "LEFT JOIN e_channel.channel ON (room_work.work_id = channel.work_id) " +
+                    "WHERE room_work.work_id=@value GROUP BY room_work.work_id";
+                command.Parameters.AddWithValue("@value", model.WorkID);
+                MySqlDataReader reader = command.ExecuteReader();
+                DoctorSchedule existing = null;
+                if (reader.Read())
+                {
+                    existing = new DoctorSchedule();
+                    existing.WorkID = reader.GetInt32("work_id");
+                    existing.DoctorName = reader.GetString("doctor_name");
+                    existing.HospitalName = reader.GetString("hospital_name");
+                    existing.RoomName = reader.GetString("room_name");
+                    existing.StartDateTime = reader.GetDateTime("start_datetime");
+                    existing.EndDateTime = reader.GetDateTime("end_datetime");
+                    existing.MaxChannels = reader.GetInt32("max_channels");
+                    existing.PatientApplied = reader.GetInt32("applied_patients");
+
+                }
+
+                if (existing == null || (existing != null && existing.PatientApplied >= existing.MaxChannels))
+                {
+                    reader.Close();
+                    transaction.Rollback();
+                    DbConnection.Close();
+                    return false;
+                }
+                reader.Close();
+                command = DbConnection.CreateCommand();
+                command.CommandText = "INSERT INTO channel(work_id, patient_id, specialization_id, service_id, channel_number, reason, channel_rating, channel_comments) VALUES(@work_id, @patient_id, @specialization_id, @service_id, @channel_number, @reason, @channel_rating, @channel_comments)";
+                command.Parameters.AddWithValue("@work_id", model.WorkID);
+                command.Parameters.AddWithValue("@patient_id", model.PatientID);
+                command.Parameters.AddWithValue("@specialization_id", model.SpecID);
+                command.Parameters.AddWithValue("@service_id", model.ServiceID);
+                command.Parameters.AddWithValue("@channel_number", existing.PatientApplied + 1);
+                command.Parameters.AddWithValue("@reason", model.Reason);
+                command.Parameters.AddWithValue("@channel_rating", model.ChannelRating);
+                command.Parameters.AddWithValue("@channel_comments", model.ChannelComments);
+                command.ExecuteNonQuery();
+                transaction.Commit();
+                DbConnection.Close();
+                return true;
+            }
+            catch
+            {
+                transaction.Rollback();
+                DbConnection.Close();
+                return false;
+            }
         }
 
         public void UpdateChannel(Channel model)
