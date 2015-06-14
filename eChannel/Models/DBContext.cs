@@ -275,7 +275,7 @@ namespace eChannel.Models
 
             DbConnection.Open();
             MySqlCommand command = DbConnection.CreateCommand();
-            command.CommandText = "SELECT * FROM hospital;";
+            command.CommandText = "SELECT * FROM hospital ORDER BY location,name;";
             MySqlDataReader reader = command.ExecuteReader();
             List<Hospital> hospitals = new List<Hospital>();
 
@@ -373,7 +373,6 @@ namespace eChannel.Models
 
         public void CreateRoomWork(RoomWork model)
         {
-
             DbConnection.Open();
             MySqlCommand command = DbConnection.CreateCommand();
             command.CommandText = "INSERT INTO room_work(doctor_id,room_id,start_datetime,end_datetime,max_channels) VALUES(@doctor_id, @room_id,@start_datetime,@end_datetime,@max_channels)";
@@ -384,6 +383,51 @@ namespace eChannel.Models
             command.Parameters.AddWithValue("@max_channels", model.MaxChannels);
             command.ExecuteNonQuery();
             DbConnection.Close();
+        }
+
+        public bool CreateTransactionalRoomWork(RoomWork model)
+        {
+            DbConnection.Open();
+            MySqlTransaction transaction = DbConnection.BeginTransaction();
+            try
+            {
+                MySqlCommand command = DbConnection.CreateCommand();
+                command.CommandText = "SELECT * FROM room_work WHERE room_id=@value " +
+                "AND (start_datetime < @end "+
+                "AND end_datetime > @start);";
+                command.Parameters.AddWithValue("@value", model.RoomID);
+                command.Parameters.AddWithValue("@start", model.StartDateTime);
+                command.Parameters.AddWithValue("@end", model.EndDateTime);
+                MySqlDataReader reader = command.ExecuteReader();
+                List<RoomWork> roomWorks = new List<RoomWork>();
+
+                while (reader.Read())
+                {
+                    reader.Close();
+                    transaction.Rollback();
+                    DbConnection.Close();
+                    return false;
+                }
+                reader.Close();
+                command = DbConnection.CreateCommand();
+                command.CommandText = "INSERT INTO room_work(doctor_id,room_id,start_datetime,end_datetime,max_channels) VALUES(@doctor_id, @room_id,@start_datetime,@end_datetime,@max_channels)";
+                command.Parameters.AddWithValue("@doctor_id", model.DoctorID);
+                command.Parameters.AddWithValue("@room_id", model.RoomID);
+                command.Parameters.AddWithValue("@start_datetime", model.StartDateTime);
+                command.Parameters.AddWithValue("@end_datetime", model.EndDateTime);
+                command.Parameters.AddWithValue("@max_channels", model.MaxChannels);
+                command.ExecuteNonQuery();
+                transaction.Commit();
+                DbConnection.Close();
+
+                return true;
+            }
+            catch
+            {
+                transaction.Rollback();
+                DbConnection.Close();
+                return false;
+            }
         }
 
         public RoomWork FindOneInRoomWork(string columnName, string value)
@@ -447,7 +491,7 @@ namespace eChannel.Models
                 "JOIN e_channel.hospital ON room.hospital_id=hospital.hospital_id " +
                 "JOIN e_channel.doctor ON room_work.doctor_id=doctor.doctor_id " +
                 "LEFT JOIN e_channel.channel ON (room_work.work_id = channel.work_id) " +
-                "WHERE room_work.doctor_id=@value GROUP BY room_work.work_id";
+                "WHERE room_work.doctor_id=@value GROUP BY room_work.work_id ORDER BY room_work.work_id DESC";
             command.Parameters.AddWithValue("@value", doctorID);
             MySqlDataReader reader = command.ExecuteReader();
             List<DoctorSchedule> doctorSchedules = new List<DoctorSchedule>();
@@ -800,7 +844,7 @@ namespace eChannel.Models
                 "LEFT JOIN patient ON channel.patient_id=patient.patient_id " +
                 "JOIN specialization ON channel.specialization_id=specialization.specialization_id " +
                 "JOIN service ON channel.service_id=service.service_id " +
-                "WHERE work_id IN (SELECT room_work.work_id FROM room_work WHERE doctor_id =@doctorID);";
+                "WHERE work_id IN (SELECT room_work.work_id FROM room_work WHERE doctor_id =@doctorID) ORDER BY channel_id DESC;";
             command.Parameters.AddWithValue("@doctorID", doctorID);
             MySqlDataReader reader = command.ExecuteReader();
             List<DoctorChannel> doctorChannels = new List<DoctorChannel>();
@@ -833,7 +877,7 @@ namespace eChannel.Models
                 "JOIN specialization ON channel.specialization_id=specialization.specialization_id " +
                 "JOIN service ON channel.service_id=service.service_id " +
                 "WHERE work_id IN (SELECT room_work.work_id FROM room_work WHERE doctor_id =@doctorID) AND " +
-                column + " LIKE @key;";
+                column + " LIKE @key ORDER BY channel_id DESC;";
             command.Parameters.AddWithValue("@doctorID", doctorID);
             command.Parameters.AddWithValue("@key", "%" + keyword + "%");
             MySqlDataReader reader = command.ExecuteReader();

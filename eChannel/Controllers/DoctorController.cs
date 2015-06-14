@@ -75,8 +75,8 @@ namespace eChannel.Controllers
                     EndDateTime = Convert.ToDateTime(Request.Form["finish_time"]),
                     MaxChannels = Convert.ToInt32(Request.Form["max_channels"])
                 };
-                DBContext.GetInstance().CreateRoomWork(newRoomWork);
-                ViewData["success"] = 1;
+                bool isSuccess = DBContext.GetInstance().CreateTransactionalRoomWork(newRoomWork);
+                ViewData["success"] = Convert.ToInt32(isSuccess);
 
             }
 
@@ -130,7 +130,7 @@ namespace eChannel.Controllers
 
                 ViewData["doctor-channels"] = doctorChannels;
 
-                if(keyword.Equals(""))
+                if (keyword.Equals(""))
                 {
                     doctorChannels = DBContext.GetInstance().FindAllInDoctorChannel((int)Session["userID"]);
                     ViewData["doctor-channels"] = doctorChannels;
@@ -171,6 +171,13 @@ namespace eChannel.Controllers
         public ActionResult GetDoctorScheduleBySpecializationID(string specializationID)
         {
             List<DoctorSchedule> schedules = DBContext.GetInstance().FindAllDoctorScheduleBySpecializationID(Convert.ToInt32(specializationID));
+            for (int i = 0; i < schedules.Count; i++)
+            {
+                if (schedules[i].EndDateTime.CompareTo(DateTime.Now) < 0 || schedules[i].PatientApplied >= schedules[i].MaxChannels)
+                {
+                    schedules.Remove(schedules[i--]);
+                }
+            }
             return Json(schedules, JsonRequestBehavior.AllowGet);
         }
     }
